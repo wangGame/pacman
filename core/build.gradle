@@ -1,0 +1,10 @@
+apply plugin: "java"
+
+sourceCompatibility = 1.8
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+dependencies {
+    compile project(':gdx')
+    compile group: 'com.badlogicgames.gdx', name: 'gdx-box2d', version: '1.9.8'
+}
+
+sourceSets.main.java.srcDirs = [ "src/" ]
