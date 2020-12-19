@@ -1,5 +1,6 @@
 package kw.pacman.game.screen.base;
 
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -38,6 +39,7 @@ public class BaseMapScreen extends BaseScreen {
     @Override
     public void show() {
         super.show();
+        inputMultiplexer.addProcessor(keyListener);
     }
 
     @Override
@@ -64,5 +66,29 @@ public class BaseMapScreen extends BaseScreen {
         Constant.world.step(1/60f,8,3);
 //        Constant.box2DDebugRenderer.render(Constant.world, camera.combined);
         super.render(delta);
+    }
+
+    private InputAdapter keyListener = new InputAdapter(){
+        private int keycode;
+        @Override
+        public boolean keyDown(int keycode) {
+            this.keycode = keycode;
+            return super.keyDown(keycode);
+        }
+
+        @Override
+        public boolean keyTyped(char character) {
+            keyEvent(keycode);
+            return super.keyTyped(character);
+        }
+
+        @Override
+        public boolean keyUp(int keycode) {
+            return super.keyUp(keycode);
+        }
+    };
+
+    protected void keyEvent(int keyCode){
+
     }
 }

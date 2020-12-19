@@ -1,5 +1,6 @@
 package kw.pacman.game.screen;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -17,8 +18,12 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Align;
+
+import java.awt.event.KeyListener;
 
 import javafx.scene.PointLight;
 import kw.pacman.game.actor.Box2DActor;
@@ -28,6 +33,7 @@ import kw.pacman.game.screen.base.BaseMapScreen;
 public class MainScreen extends BaseMapScreen {
     private World world;
     private boolean wall;
+    private Box2DActor player;
     public MainScreen() {
         super("map/map.tmx");
         world = Constant.world;
@@ -38,6 +44,12 @@ public class MainScreen extends BaseMapScreen {
         //绘制地图里面的墙等元素
         mapWorldView();
         initPanelView();
+        initWordListener();
+    }
+
+    private void initWordListener() {
+        World world = Constant.world;
+        world.setContactListener(new WorldContactListener());
     }
 
     private void initPanelView() {
@@ -96,8 +108,6 @@ public class MainScreen extends BaseMapScreen {
 
         /*******************create find map**********************/
 //        GameManager.instance.pathfinder = new AStartPathFinding(aStarMap);
-
-
 
         // Gate
         MapLayer gateLayer = mapLayers.get("Gate"); // gate layer
@@ -211,9 +221,9 @@ public class MainScreen extends BaseMapScreen {
                     Constant.PILL_BIT;
             body.createFixture(fixtureDef);
             circleShape.dispose();
-            Box2DActor actor = new Box2DActor(new Texture("play/actors_04.jpg"));
-            actor.setBody(body);
-            fillStage.addActor(actor);
+            player = new Box2DActor(new Texture("play/actors_04.jpg"));
+            player.setBody(body);
+            fillStage.addActor(player);
         }
     }
 
@@ -227,5 +237,11 @@ public class MainScreen extends BaseMapScreen {
     @Override
     public void render(float delta) {
         super.render(delta);
+    }
+
+    @Override
+    protected void keyEvent(int keyCode) {
+        super.keyEvent(keyCode);
+        player.keyEvent(keyCode);
     }
 }
