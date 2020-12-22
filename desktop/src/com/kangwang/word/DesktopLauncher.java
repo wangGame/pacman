@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 
+import kw.pacman.game.Pacman;
+
 public class DesktopLauncher {
     public static void main(String[] arg) {
 //        texturePack();
@@ -13,7 +15,7 @@ public class DesktopLauncher {
         config.title = "wrod squares";
         config.width =460; //485
         config.height =940;
-        new LwjglApplication(new LearnGame(),config);
+        new LwjglApplication(new Pacman(),config);
     }
 
     static String[] atlasFileName = {"main"};

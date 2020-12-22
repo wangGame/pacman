@@ -28,17 +28,12 @@ public class Pacman extends Game {
     private OrthographicCamera camera;
     @Override
     public void create() {
-        //create viewport and as a constant
         Constant.viewport = viewport = new ExtendViewport(720,1280);
         camera  = Constant.camera = new OrthographicCamera();
-        camera.translate(19.0F/2,23.0F/2);
+        camera.translate(10.0F/2,23.0F/2);
         camera.update();
         Constant.fillViewport = new FillViewport(19,23,camera);
-        // call to set value Constant.width and Constant.height
-//        resize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
-        //create batch
         Constant.batch = new SpriteBatch();
-        //loading
         Constant.game = this;
         Constant.assetManager = new AssetManager();
         Constant.world = new World(Vector2.Zero, true);
@@ -53,7 +48,6 @@ public class Pacman extends Game {
         Constant.height = viewport.getWorldHeight();
         Constant.width = viewport.getWorldWidth();
         Constant.bgScale = Math.max(Constant.width / 720, Constant.height / 1280);
-//        Constant.fillViewport.update(width,height);
     }
 
     @Override

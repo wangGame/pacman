@@ -25,15 +25,12 @@ public class BaseMapScreen extends BaseScreen {
     protected static TiledMap tiledMap;
     protected OrthographicCamera camera;
     protected World world;
-    private Array<Actor> actors;
     protected Stage fillStage;
     public BaseMapScreen(String path){
         tiledMap = new TmxMapLoader().load(path);
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap,1/16f, new SpriteBatch());
         camera = Constant.camera;
         world = Constant.world;
-        actors = new Array<>();
-        actors.clear();
         fillStage = new Stage(Constant.fillViewport,Constant.batch);
     }
 
