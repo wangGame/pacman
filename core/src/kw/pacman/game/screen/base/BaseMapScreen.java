@@ -9,14 +9,8 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
-import com.sun.prism.image.ViewPort;
 
 import kw.pacman.game.constant.Constant;
 
@@ -59,8 +53,8 @@ public class BaseMapScreen extends BaseScreen {
     public void render(float delta) {
         tiledMapRenderer.setView(Constant.camera);
         tiledMapRenderer.render();
-//        fillStage.act();
-//        fillStage.draw();
+        fillStage.act();
+        fillStage.draw();
         Constant.world.step(1/60f,8,3);
 //        Constant.box2DDebugRenderer.render(Constant.world, camera.combined);
         super.render(delta);

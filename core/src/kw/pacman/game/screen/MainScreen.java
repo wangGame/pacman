@@ -49,9 +49,9 @@ public class MainScreen extends BaseMapScreen {
     @Override
     protected void initView() {
         //绘制地图里面的墙等元素
-//        mapWorldView();
-//        initPanelView();
-//        initWordListener();
+        mapWorldView();
+        initPanelView();
+        initWordListener();
     }
 
     private void initWordListener() {
