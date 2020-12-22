@@ -4,6 +4,7 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -28,7 +29,7 @@ public class BaseMapScreen extends BaseScreen {
     protected Stage fillStage;
     public BaseMapScreen(String path){
         tiledMap = new TmxMapLoader().load(path);
-        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap,1/16f, Constant.batch);
+        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap,1/16f, new SpriteBatch());
         camera = Constant.camera;
         world = Constant.world;
         actors = new Array<>();
@@ -61,8 +62,8 @@ public class BaseMapScreen extends BaseScreen {
     public void render(float delta) {
         tiledMapRenderer.setView(Constant.camera);
         tiledMapRenderer.render();
-        fillStage.act();
-        fillStage.draw();
+//        fillStage.act();
+//        fillStage.draw();
         Constant.world.step(1/60f,8,3);
 //        Constant.box2DDebugRenderer.render(Constant.world, camera.combined);
         super.render(delta);

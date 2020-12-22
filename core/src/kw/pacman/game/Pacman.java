@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.CpuSpriteBatch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -35,9 +36,9 @@ public class Pacman extends Game {
         camera.update();
         Constant.fillViewport = fillViewport = new FillViewport(19,23,camera);
         // call to set value Constant.width and Constant.height
-        resize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+//        resize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         //create batch
-        Constant.batch = new CpuSpriteBatch();
+        Constant.batch = new SpriteBatch();
         //loading
         Constant.game = this;
         Constant.assetManager = new AssetManager();
@@ -53,7 +54,7 @@ public class Pacman extends Game {
         Constant.height = viewport.getWorldHeight();
         Constant.width = viewport.getWorldWidth();
         Constant.bgScale = Math.max(Constant.width / 720, Constant.height / 1280);
-        Constant.fillViewport.update(width,height);
+//        Constant.fillViewport.update(width,height);
     }
 
     @Override
