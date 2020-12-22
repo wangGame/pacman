@@ -8,6 +8,8 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import kw.pacman.game.asset.Asset;
+
 public class Constant {
     public static final short FANMIAN = 0;
     public static final short ZHENGMIAN = 1;
@@ -34,4 +36,11 @@ public class Constant {
     public static final float PPM = 16f;
     public static World world;
     public static Box2DDebugRenderer box2DDebugRenderer;
+    public static Asset assset;
+
+    public static int pillNum = 0;
+
+    public static enum STATUS{
+        IDE
+    }
 }

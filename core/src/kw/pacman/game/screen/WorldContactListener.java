@@ -2,12 +2,16 @@ package kw.pacman.game.screen;
 
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 
+import javax.swing.Box;
+
+import kw.pacman.game.actor.Box2DActor;
 import kw.pacman.game.constant.Constant;
 
 public class WorldContactListener implements ContactListener {
@@ -20,22 +24,24 @@ public class WorldContactListener implements ContactListener {
                 fixtureB.getFilterData().categoryBits == Constant.PILL_BIT) {
             // pill
             if (fixtureA.getFilterData().categoryBits == Constant.PLAYER_BIT) {
-//                Body body = fixtureB.getBody();
-//                Entity entity = (Entity) body.getUserData();
-//                PillComponent pill = pillM.get(entity);
-//                pill.eaten = true;
-//                GameManager.instance.bigPillEaten = pill.big;
+                Body body = fixtureB.getBody();
+                System.out.println("====>>> doudou1 kill !!!");
+                Box2DActor box2DActor = (Box2DActor) body.getUserData();
+                box2DActor.remove();
             } else if (fixtureB.getFilterData().categoryBits == Constant.PLAYER_BIT) {
                 Body body = fixtureA.getBody();
-//                Entity entity = (Entity) body.getUserData();
-//                PillComponent pill = pillM.get(entity);
-//                pill.eaten = true;
-//                GameManager.instance.bigPillEaten = pill.big;
+                Box2DActor box2DActor = (Box2DActor) body.getUserData();
+                box2DActor.remove();
+                System.out.println("====>>> doudou2 kill !!!");
             }
         } else if (fixtureA.getFilterData().categoryBits == Constant.GHOST_BIT ||
                 fixtureB.getFilterData().categoryBits == Constant.GHOST_BIT) {
             // ghost
             if (fixtureA.getFilterData().categoryBits == Constant.PLAYER_BIT) {
+                Box2DActor player = (Box2DActor)fixtureA.getBody().getUserData();
+                Box2DActor ghost = (Box2DActor)fixtureB.getBody().getUserData();
+
+
 //                PlayerComponent player = playerM.get((Entity) fixtureA.getBody().getUserData());
 //                GhostComponent ghost = ghostM.get((Entity) fixtureB.getBody().getUserData());
 

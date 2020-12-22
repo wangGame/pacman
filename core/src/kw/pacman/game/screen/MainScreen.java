@@ -1,8 +1,10 @@
 package kw.pacman.game.screen;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapLayers;
@@ -34,16 +36,21 @@ public class MainScreen extends BaseMapScreen {
     private World world;
     private boolean wall;
     private Box2DActor player;
+    private AssetManager assetManager;
+    private final TextureAtlas actorAtlas;
+
     public MainScreen() {
         super("map/map.tmx");
         world = Constant.world;
+        assetManager = Constant.assetManager;
+        actorAtlas = assetManager.get("images/actors.pack", TextureAtlas.class);
     }
 
     @Override
     protected void initView() {
         //绘制地图里面的墙等元素
         mapWorldView();
-        initPanelView();
+//        initPanelView();
         initWordListener();
     }
 
@@ -53,25 +60,22 @@ public class MainScreen extends BaseMapScreen {
     }
 
     private void initPanelView() {
-        Image image = new Image(new Texture("tip.png"));
-        stage.addActor(image);
-        image.setPosition(Constant.width/2,Constant.height, Align.top);
+//        Image image = new Image(new Texture("tip.png"));
+//        stage.addActor(image);
+//        image.setPosition(Constant.width/2,Constant.height, Align.top);
     }
 
     private void mapWorldView() {
         MapLayers mapLayers = tiledMap.getLayers();
-        //get width and hight
         int mapWidth = ((TiledMapTileLayer) mapLayers.get(0)).getWidth();
         int mapHeight = ((TiledMapTileLayer) mapLayers.get(0)).getHeight();
-        // walls
-        MapLayer wallLayer = mapLayers.get("Wall"); // wall layer
+        MapLayer wallLayer = mapLayers.get("Wall");
         for (MapObject mapObject : wallLayer.getObjects()) {
             Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
             correctRectangle(rectangle);
             BodyDef bodyDef = new BodyDef();
             bodyDef.type = BodyDef.BodyType.StaticBody;
             bodyDef.position.set(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
-
             Body body = world.createBody(bodyDef);
             PolygonShape polygonShape = new PolygonShape();
             polygonShape.setAsBox(rectangle.width / 2, rectangle.height / 2);
@@ -117,7 +121,6 @@ public class MainScreen extends BaseMapScreen {
             BodyDef bodyDef = new BodyDef();
             bodyDef.type = BodyDef.BodyType.StaticBody;
             bodyDef.position.set(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
-
             Body body = world.createBody(bodyDef);
             PolygonShape polygonShape = new PolygonShape();
             polygonShape.setAsBox(rectangle.width / 2, rectangle.height / 2);
@@ -129,22 +132,20 @@ public class MainScreen extends BaseMapScreen {
             body.createFixture(fixtureDef);
             polygonShape.dispose();
         }
-
         // pills
         MapLayer pillLayer = mapLayers.get("Pill"); // pill layer
         for (MapObject mapObject : pillLayer.getObjects()) {
             Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
             correctRectangle(rectangle);
-
             boolean isBig = false;
             float radius = 0.1f;
-            Texture texture;
+            TextureRegion textureRegion;
 
             if (mapObject.getProperties().containsKey("big")) {
                 radius = 0.2f;
-                texture = new Texture("duzi/actors_03.png");
+                textureRegion = new TextureRegion(actorAtlas.findRegion("Pill"), 16, 0, 16, 16);
             } else {
-                texture = new Texture("duzi/actors_04.png");
+                textureRegion = new TextureRegion(actorAtlas.findRegion("Pill"), 0, 0, 16, 16);
             }
 
             BodyDef bodyDef = new BodyDef();
@@ -161,9 +162,11 @@ public class MainScreen extends BaseMapScreen {
             fixtureDef.isSensor = true;
             body.createFixture(fixtureDef);
             circleShape.dispose();
-            Box2DActor actor = new Box2DActor(texture);
+            Box2DActor actor = new Box2DActor(textureRegion);
             actor.setBody(body);
             fillStage.addActor(actor);
+
+            Constant.pillNum++;
         }
 
         // ghosts
@@ -173,7 +176,7 @@ public class MainScreen extends BaseMapScreen {
             correctRectangle(rectangle);
 //            Constant.instance.ghostSpawnPos.set(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
             // create four ghosts
-            Texture texture = new Texture("play/actors_03.jpg");
+            TextureRegion pacman = new TextureRegion(actorAtlas.findRegion("Pacman"), 0, 0, 16, 16);
             for (int i = 0; i < 4; i++) {
                 BodyDef bodyDef = new BodyDef();
                 bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -193,7 +196,7 @@ public class MainScreen extends BaseMapScreen {
                 fixtureDef.filter.maskBits = Constant.WALL_BIT | Constant.GATE_BIT;
                 fixtureDef.isSensor = false;
                 body.createFixture(fixtureDef);
-                Box2DActor actor = new Box2DActor(texture);
+                Box2DActor actor = new Box2DActor(pacman);
                 actor.setBody(body);
                 fillStage.addActor(actor);
             }
@@ -221,7 +224,8 @@ public class MainScreen extends BaseMapScreen {
                     Constant.PILL_BIT;
             body.createFixture(fixtureDef);
             circleShape.dispose();
-            player = new Box2DActor(new Texture("play/actors_04.jpg"));
+            TextureRegion pacman = new TextureRegion(actorAtlas.findRegion("Pacman"), 0, 0, 16, 16);
+            player = new Box2DActor(pacman);
             player.setBody(body);
             fillStage.addActor(player);
         }
@@ -232,11 +236,6 @@ public class MainScreen extends BaseMapScreen {
         rectangle.y = rectangle.y / Constant.PPM;
         rectangle.width = rectangle.width / Constant.PPM;
         rectangle.height = rectangle.height / Constant.PPM;
-    }
-
-    @Override
-    public void render(float delta) {
-        super.render(delta);
     }
 
     @Override

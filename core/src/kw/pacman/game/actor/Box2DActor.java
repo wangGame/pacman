@@ -13,9 +13,13 @@ import com.badlogic.gdx.utils.Align;
 
 import java.awt.AWTKeyStroke;
 
+import kw.pacman.game.constant.Constant;
+
 public class Box2DActor extends Image {
     private Listener listener;
     private Body body;
+    private Constant.STATUS status;
+    private int num;
     public Box2DActor(TextureRegion region) {
         super(region);
     }
@@ -26,6 +30,7 @@ public class Box2DActor extends Image {
 
     public void setBody(Body body) {
         this.body = body;
+        body.setUserData(this);
         setPosition(body.getPosition().x,body.getPosition().y,Align.center);//        System.out.println(body.getPosition().x+"=============="+body.getPosition().y);
         setOrigin(Align.center);
         setScale(0.0625F);
@@ -48,7 +53,7 @@ public class Box2DActor extends Image {
         public void touchEvent();
     }
     private final Vector2 tmpV1 = new Vector2();
-    private final Vector2 tmpV2 = new Vector2();
+
     public void keyEvent(int keyCode){
         System.out.println(keyCode+",,,,,,,,,");
         if ((Gdx.input.isKeyPressed(Input.Keys.G))) {
@@ -69,4 +74,12 @@ public class Box2DActor extends Image {
         }
         setPosition(body.getPosition().x,body.getPosition().y,Align.center);
     }
+
+
+    @Override
+    public boolean remove() {
+        System.out.println("sound play !!! ");
+        return super.remove();
+    }
+
 }

@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import javax.swing.text.View;
 
+import kw.pacman.game.asset.Asset;
 import kw.pacman.game.constant.Constant;
 import kw.pacman.game.screen.LoadingScreen;
 
