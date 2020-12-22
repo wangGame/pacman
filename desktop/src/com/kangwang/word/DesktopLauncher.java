@@ -6,9 +6,6 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 
-import kw.pacman.game.Pacman;
-import test.learn.LearnGame;
-
 public class DesktopLauncher {
     public static void main(String[] arg) {
 //        texturePack();

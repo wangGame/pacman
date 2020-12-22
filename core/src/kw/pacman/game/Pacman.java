@@ -25,7 +25,6 @@ import kw.pacman.game.screen.LoadingScreen;
 
 public class Pacman extends Game {
     private Viewport viewport;
-    private Viewport fillViewport;
     private OrthographicCamera camera;
     @Override
     public void create() {
@@ -34,7 +33,7 @@ public class Pacman extends Game {
         camera  = Constant.camera = new OrthographicCamera();
         camera.translate(19.0F/2,23.0F/2);
         camera.update();
-        Constant.fillViewport = fillViewport = new FillViewport(19,23,camera);
+        Constant.fillViewport = new FillViewport(19,23,camera);
         // call to set value Constant.width and Constant.height
 //        resize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         //create batch
