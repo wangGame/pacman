@@ -23,24 +23,17 @@ public class Constant {
     public static final short GATE_BIT = 1 << 4;
     public static final short LIGHT_BIT = 1 << 5;
 
-    public static float width;
-    public static float height;
-    public static Viewport viewport;
+
     public static Game game;
     public static Batch batch;
 
-    public static float bgScale = 1;
     public static AssetManager assetManager;
     public static Viewport fillViewport;
     public static OrthographicCamera camera;
     public static final float PPM = 16f;
     public static World world;
     public static Box2DDebugRenderer box2DDebugRenderer;
-    public static Asset assset;
-
     public static int pillNum = 0;
 
-    public static enum STATUS{
-        IDE
-    }
+    public static boolean bigPill = false;
 }

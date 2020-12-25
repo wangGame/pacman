@@ -5,6 +5,8 @@ sourceCompatibility = 1.8
 dependencies {
     compile project(':gdx')
     compile group: 'com.badlogicgames.gdx', name: 'gdx-box2d', version: '1.9.8'
+    compile group: 'com.badlogicgames.gdx', name: 'gdx-ai', version: '1.8.2'
+    compile group: 'com.badlogicgames.ashley', name: 'ashley', version: '1.7.3'
 }
 
 sourceSets.main.java.srcDirs = [ "src/" ]

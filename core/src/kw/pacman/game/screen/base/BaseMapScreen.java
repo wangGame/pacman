@@ -1,5 +1,6 @@
 package kw.pacman.game.screen.base;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -15,12 +16,14 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import kw.pacman.game.constant.Constant;
 
 public class BaseMapScreen extends BaseScreen {
+    protected Engine engine;
     protected static TiledMapRenderer tiledMapRenderer;
     protected static TiledMap tiledMap;
     protected OrthographicCamera camera;
     protected World world;
     protected Stage fillStage;
     public BaseMapScreen(String path){
+        engine = new Engine();
         tiledMap = new TmxMapLoader().load(path);
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap,1/16f, new SpriteBatch());
         camera = Constant.camera;
@@ -56,8 +59,14 @@ public class BaseMapScreen extends BaseScreen {
         fillStage.act();
         fillStage.draw();
         Constant.world.step(1/60f,8,3);
+        engine.update(delta);
 //        Constant.box2DDebugRenderer.render(Constant.world, camera.combined);
         super.render(delta);
+    }
+
+    @Override
+    public void dispose() {
+
     }
 
     private InputAdapter keyListener = new InputAdapter(){

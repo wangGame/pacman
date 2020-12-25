@@ -18,7 +18,6 @@ import kw.pacman.game.constant.Constant;
 public class Box2DActor extends Image {
     private Listener listener;
     private Body body;
-    private Constant.STATUS status;
     private int num;
     public Box2DActor(TextureRegion region) {
         super(region);
