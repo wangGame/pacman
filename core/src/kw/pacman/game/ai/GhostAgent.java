@@ -6,6 +6,7 @@ import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.ai.msg.Telegraph;
 import com.badlogic.gdx.math.Vector2;
 
+import kw.pacman.game.ai.astar.Node;
 import kw.pacman.game.components.GhostComponent;
 
 public class GhostAgent implements Telegraph {
@@ -14,6 +15,7 @@ public class GhostAgent implements Telegraph {
     public StateMachine<GhostAgent,GhostState> stateMachine;
     public float speed = 2.4F;
     public float timer;
+    public Node nextNode;
 
     public GhostAgent(GhostComponent ghostComponent){
         this.component = ghostComponent;
@@ -26,8 +28,8 @@ public class GhostAgent implements Telegraph {
     }
 
     public void update(float deltaTime){
-        timer += deltaTime;
         stateMachine.update();
+        timer += deltaTime;
     }
 
     @Override

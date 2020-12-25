@@ -1,13 +1,16 @@
 package kw.pacman.game.constant;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.ai.utils.Location;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import kw.pacman.game.ai.astar.AStartPathFinding;
 import kw.pacman.game.asset.Asset;
 
 public class Constant {
@@ -36,4 +39,9 @@ public class Constant {
     public static int pillNum = 0;
 
     public static boolean bigPill = false;
+    public static Location<Vector2> playerLocation;
+    public static boolean playerIsAlive;
+    public static boolean playerIsInvincible;
+    public static Vector2 ghostSpawnPos;
+    public static AStartPathFinding pathfinder;
 }

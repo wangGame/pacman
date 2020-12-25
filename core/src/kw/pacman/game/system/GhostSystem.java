@@ -19,7 +19,7 @@ public class GhostSystem extends IteratingSystem {
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         GhostComponent ghost = ghostM.get(entity);
-
+        ghost.agent.update(deltaTime);
         //吃大的
         if (Constant.bigPill) {
             ghost.waken_time = 0;

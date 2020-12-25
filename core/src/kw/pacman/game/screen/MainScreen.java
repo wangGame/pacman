@@ -33,6 +33,7 @@ import kw.pacman.game.actor.Box2DActor;
 import kw.pacman.game.components.MoveComponent;
 import kw.pacman.game.constant.Constant;
 import kw.pacman.game.screen.base.BaseMapScreen;
+import kw.pacman.game.system.GhostSystem;
 import kw.pacman.game.system.MoveSystem;
 import kw.pacman.game.system.PillSystem;
 import kw.pacman.game.system.PlaySystem;
@@ -43,6 +44,7 @@ public class MainScreen extends BaseMapScreen {
     private PlaySystem playSystem;
     private MoveSystem moveSystem;
     private PillSystem pillSystem;
+    private GhostSystem ghostSystem;
     public MainScreen() {
         super("map/map.tmx");
     }
@@ -67,6 +69,8 @@ public class MainScreen extends BaseMapScreen {
         engine.addSystem(pillSystem);
         renderSystem = new RenderSystem(Constant.batch);
         engine.addSystem(renderSystem);
+        ghostSystem = new GhostSystem();
+        engine.addSystem(ghostSystem);
     }
 
     private void initWordListener() {

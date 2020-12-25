@@ -213,6 +213,10 @@ public class MainWorldView extends Group {
             entity.add(new TextureComponent(pacman));
             engine.addEntity(entity);
             body.setUserData(entity);
+
+
+
+            Constant.playerLocation = player.ai;
         }
     }
 
