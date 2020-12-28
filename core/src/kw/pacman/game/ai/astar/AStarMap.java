@@ -13,10 +13,10 @@ public class AStarMap {
 
         map = new Node[height][width];
         for (int y = 0; y < height; y++) {
-           for (int x = 0; x < width; x++) {
-         	  map[y][x] = new Node(this, x, y);
-           }
-       }
+            for (int x = 0; x < width; x++) {
+                map[y][x] = new Node(this, x, y);
+            }
+        }
     }
 
     public int getWidth() {
@@ -36,11 +36,11 @@ public class AStarMap {
         StringBuilder stringBuilder = new StringBuilder();
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-               stringBuilder.append(map[y][x].isWall ? "#" : " ");
+                stringBuilder.append(map[y][x].isWall ? "#" : " ");
             }
             stringBuilder.append("\n");
         }
         return stringBuilder.toString();
     }
-
 }
+

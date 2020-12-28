@@ -37,12 +37,18 @@ public class GhostSystem extends IteratingSystem {
         if (Constant.bigPill){
             ghost.weaken = true;
         }
+
+
+        if (Constant.bigPill) {
+            ghost.weaken = true;
+//            state.resetStateTime();
+        }
     }
 
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);   //update
-        Constant.bigPill = true;
+        Constant.bigPill = false;
 
     }
 }

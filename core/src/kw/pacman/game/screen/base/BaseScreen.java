@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import kw.pacman.game.constant.Constant;
 
 public abstract class BaseScreen implements Screen {
-
     protected InputMultiplexer inputMultiplexer;
     @Override
     public void show() {

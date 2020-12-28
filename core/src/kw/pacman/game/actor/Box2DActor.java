@@ -56,20 +56,16 @@ public class Box2DActor extends Image {
     public void keyEvent(int keyCode){
         System.out.println(keyCode+",,,,,,,,,");
         if ((Gdx.input.isKeyPressed(Input.Keys.G))) {
-            System.out.println("=======----------");
+
         }
         if (keyCode == Input.Keys.A){
-            System.out.println("=======>>>>>");
             body.applyLinearImpulse(tmpV1.set(-3.6F, 0).scl(body.getMass()), body.getWorldCenter(), true);
         }else if (keyCode == Input.Keys.D){
-            System.out.println("=======>>>>>D");
             body.applyLinearImpulse(tmpV1.set(3.6F, 0).scl(body.getMass()), body.getWorldCenter(), true);
         }else if (keyCode == Input.Keys.W){
-            System.out.println("=======>>>>>W");
             body.applyLinearImpulse(tmpV1.set(0,3.6F).scl(body.getMass()), body.getWorldCenter(), true);
         }else if (keyCode == Input.Keys.S){
             body.applyLinearImpulse(tmpV1.set(0,-3.6F).scl(body.getMass()), body.getWorldCenter(), true);
-            System.out.println("=======>>>>>S");
         }
         setPosition(body.getPosition().x,body.getPosition().y,Align.center);
     }

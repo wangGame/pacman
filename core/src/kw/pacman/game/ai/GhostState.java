@@ -18,8 +18,11 @@ import kw.pacman.game.components.GhostComponent;
 import kw.pacman.game.components.MoveComponent;
 import kw.pacman.game.constant.Constant;
 
-import static kw.pacman.game.components.GhostComponent.MOVE_UP;
-
+/**
+ * 鬼在老槽裏， 開始都是朝上走，0.5s后，可以改變方向
+ * 改變方向：
+ *  - 不走回頭路
+ */
 public enum  GhostState implements State<GhostAgent> {
     MOVE_UP(){
         @Override
@@ -43,8 +46,6 @@ public enum  GhostState implements State<GhostAgent> {
                 //随机的选取一个进行
                 int randomDirectionChoice = getRandomDirectionChoice(directionChoices);
                 changeState(entity,randomDirectionChoice);
-                GhostComponent component = entity.component;
-                System.out.println("current timer:"+entity.timer);
                 return;
             }
 
@@ -57,10 +58,8 @@ public enum  GhostState implements State<GhostAgent> {
                     return;
                 }
             }
-
-//
 //            减弱      ESCAPE  当player吃了big pill之后
-            if (Constant.bigPill) {
+            if (entity.component.weaken) {
 //                进入逃逸
                 entity.component.currentState = GhostComponent.ESCAPE;
 //                实体如果死亡了，就让他重新开始
@@ -76,7 +75,9 @@ public enum  GhostState implements State<GhostAgent> {
              */
             if (nearPlayer(entity, PURSUE_RADIUS) &&
                     (Constant.playerIsAlive && !Constant.playerIsInvincible)
-                    && inPosition(entity, 0.1f)) {
+                    && inPosition(entity, 0.1f))
+//                if (nearPlayer(entity, PURSUE_RADIUS)&&inPosition(entity, 0.1f))
+                {
                 //减弱
                 if (entity.component.weaken) {
                     entity.stateMachine.changeState(ESCAPE);
@@ -299,56 +300,56 @@ public enum  GhostState implements State<GhostAgent> {
     },PURSUE(){
         @Override
         public void update(GhostAgent entity) {
-//            if (Constant.playerLocation == null || !(Constant.playerIsAlive && !Constant.playerIsInvincible)) {
-//                changeState(entity, MathUtils.random(0, 3));
-//                return;
-//            }
-//
-//            // do path finding every 0.1 second
-//            if (entity.nextNode == null || entity.timer > 0.1f) {
-//                entity.nextNode = Constant.pathfinder.findNextNode(entity.getPosition(), Constant.playerLocation.getPosition());
-//                entity.timer = 0;
-//            }
-//            if (entity.nextNode == null) {
-//                // no path found or player is dead
-//                changeState(entity, MathUtils.random(0, 3));
-//                return;
-//            }
-//
-//            float x = (entity.nextNode.x - MathUtils.floor(entity.getPosition().x)) * entity.speed;
-//            float y = (entity.nextNode.y - MathUtils.floor(entity.getPosition().y)) * entity.speed;
-//
-//            Body body = entity.component.getBody();
-//
-//            if (body.getLinearVelocity().isZero(0.1f) || inPosition(entity, 0.2f)) {
-//                body.applyLinearImpulse(tmpV1.set(x, y).scl(body.getMass()), body.getWorldCenter(), true);
-//            }
-//
-//            if (x > 0) {
-//                entity.component.currentState = GhostComponent.MOVE_RIGHT;
-//            } else if (x < 0) {
-//                entity.component.currentState = GhostComponent.MOVE_LEFT;
-//            } else if (y > 0) {
-//                entity.component.currentState = GhostComponent.MOVE_UP;
-//            } else if (y < 0) {
-//                entity.component.currentState = GhostComponent.MOVE_DOWN;
-//            }
-//
-//            if (body.getLinearVelocity().len2() > entity.speed * entity.speed) {
-//                body.setLinearVelocity(body.getLinearVelocity().scl(entity.speed / body.getLinearVelocity().len()));
-//            }
-//
-//            if (!nearPlayer(entity, PURSUE_RADIUS) && inPosition(entity, 0.1f)) {
-//                changeState(entity, entity.component.currentState);
-//                return;
-//            }
-//
-//            if (entity.component.weaken) {
-//                entity.component.currentState = GhostComponent.ESCAPE;
-//                if (inPosition(entity, 0.1f)) {
-//                    entity.stateMachine.changeState(ESCAPE);
-//                }
-//            }
+            if (Constant.playerLocation == null || !(Constant.playerIsAlive && !Constant.playerIsInvincible)) {
+                changeState(entity, MathUtils.random(0, 3));
+                return;
+            }
+
+            // do path finding every 0.1 second
+            if (entity.nextNode == null || entity.timer > 0.1f) {
+                entity.nextNode = Constant.pathfinder.findNextNode(entity.getPosition(), Constant.playerLocation.getPosition());
+                entity.timer = 0;
+            }
+            if (entity.nextNode == null) {
+                // no path found or player is dead
+                changeState(entity, MathUtils.random(0, 3));
+                return;
+            }
+
+            float x = (entity.nextNode.x - MathUtils.floor(entity.getPosition().x)) * entity.speed;
+            float y = (entity.nextNode.y - MathUtils.floor(entity.getPosition().y)) * entity.speed;
+
+            Body body = entity.component.getBody();
+
+            if (body.getLinearVelocity().isZero(0.1f) || inPosition(entity, 0.2f)) {
+                body.applyLinearImpulse(tmpV1.set(x, y).scl(body.getMass()), body.getWorldCenter(), true);
+            }
+
+            if (x > 0) {
+                entity.component.currentState = GhostComponent.MOVE_RIGHT;
+            } else if (x < 0) {
+                entity.component.currentState = GhostComponent.MOVE_LEFT;
+            } else if (y > 0) {
+                entity.component.currentState = GhostComponent.MOVE_UP;
+            } else if (y < 0) {
+                entity.component.currentState = GhostComponent.MOVE_DOWN;
+            }
+
+            if (body.getLinearVelocity().len2() > entity.speed * entity.speed) {
+                body.setLinearVelocity(body.getLinearVelocity().scl(entity.speed / body.getLinearVelocity().len()));
+            }
+
+            if (!nearPlayer(entity, PURSUE_RADIUS) && inPosition(entity, 0.1f)) {
+                changeState(entity, entity.component.currentState);
+                return;
+            }
+
+            if (entity.component.weaken) {
+                entity.component.currentState = GhostComponent.ESCAPE;
+                if (inPosition(entity, 0.1f)) {
+                    entity.stateMachine.changeState(ESCAPE);
+                }
+            }
         }
 
     },RESPAWN(){
@@ -452,7 +453,6 @@ public enum  GhostState implements State<GhostAgent> {
                     MathUtils.floor(entity.getPosition().y) + 0.5f), 0);
         }
         entity.timer = 0;
-        System.out.println("=======>enter");
     }
 
     @Override

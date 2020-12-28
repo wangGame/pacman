@@ -90,4 +90,10 @@ public class MainScreen extends BaseMapScreen {
     protected void keyEvent(int keyCode) {
         super.keyEvent(keyCode);
     }
+
+    @Override
+    public void render(float delta) {
+        super.render(delta);
+        System.out.println(Constant.playerIsInvincible);
+    }
 }

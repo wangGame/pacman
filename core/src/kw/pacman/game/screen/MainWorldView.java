@@ -12,6 +12,7 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -58,23 +59,6 @@ public class MainWorldView extends Group {
          * create A star
          */
         AStarMap aStarMap = new AStarMap(mapWidth,mapHeight);
-        QueryCallback queryCallback = new QueryCallback() {
-            @Override
-            public boolean reportFixture(Fixture fixture) {
-                wall = fixture.getFilterData().categoryBits == Constant.WALL_BIT;
-                return false; // stop finding other fixtures in the query area
-            }
-        };
-        for (int i = 0; i < mapHeight; i++) {
-            for (int j = 0; j < mapWidth; j++) {
-                wall = false;
-                world.QueryAABB(queryCallback,x+0.2F,y+0.2F,x+0.8F,y+0.8F);
-                if (wall){
-                    aStarMap.getNodeAt(i,j).isWall = true;
-                }
-            }
-        }
-        Constant.pathfinder = new AStartPathFinding(aStarMap);
 
         MapLayer wallLayer = mapLayers.get("Wall");
         for (MapObject mapObject : wallLayer.getObjects()) {
@@ -93,7 +77,25 @@ public class MainWorldView extends Group {
             body.createFixture(fixtureDef);
             polygonShape.dispose();
         }
-
+        QueryCallback queryCallback = new QueryCallback() {
+            @Override
+            public boolean reportFixture(Fixture fixture) {
+                wall = fixture.getFilterData().categoryBits == Constant.WALL_BIT;
+                return false; // stop finding other fixtures in the query area
+            }
+        };
+        for (int i = 0; i < mapHeight; i++) {
+            for (int j = 0; j < mapWidth; j++) {
+                wall = false;
+                //查找提提供的范围内有没有重叠的部分。
+                world.QueryAABB(queryCallback, j + 0.2f, i + 0.2f, j + 0.8f, i + 0.8f);
+                if (wall) {
+                    aStarMap.getNodeAt(j, i).isWall = true;
+                }
+            }
+        }
+        Constant.pathfinder = new AStartPathFinding(aStarMap);
+        System.out.println(aStarMap.toString());
         // Gate
         MapLayer gateLayer = mapLayers.get("Gate"); // gate layer
         for (MapObject mapObject : gateLayer.getObjects()) {
@@ -205,6 +207,7 @@ public class MainWorldView extends Group {
                 entity.add(new StateComponent());
                 entity.add(new TextureComponent(new TextureRegion(textureRegion,0, 0, 16, 16)));
                 engine.addEntity(entity);
+                body.setUserData(entity);
             }
         }
 
@@ -237,10 +240,9 @@ public class MainWorldView extends Group {
             entity.add(new TextureComponent(pacman));
             engine.addEntity(entity);
             body.setUserData(entity);
-
-
-
             Constant.playerLocation = player.ai;
+
+            Constant.playHomePos = new Vector2(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
         }
     }
 

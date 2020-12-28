@@ -38,10 +38,11 @@ public class Constant {
     public static Box2DDebugRenderer box2DDebugRenderer;
     public static int pillNum = 0;
 
-    public static boolean bigPill = true;
+    public static boolean bigPill = false;
     public static Location<Vector2> playerLocation;
-    public static boolean playerIsAlive;
-    public static boolean playerIsInvincible;
+    public static boolean playerIsAlive = true;
+    public static boolean playerIsInvincible = true;
     public static Vector2 ghostSpawnPos;
     public static AStartPathFinding pathfinder;
+    public static Vector2 playHomePos;
 }

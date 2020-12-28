@@ -13,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import javax.swing.Box;
 
 import kw.pacman.game.actor.Box2DActor;
+import kw.pacman.game.components.GhostComponent;
 import kw.pacman.game.components.PillComponent;
 import kw.pacman.game.components.PlayerComponent;
 import kw.pacman.game.constant.Constant;
@@ -41,54 +42,46 @@ public class WorldContactListener implements ContactListener {
                 fixtureB.getFilterData().categoryBits == Constant.GHOST_BIT) {
             // ghost
             if (fixtureA.getFilterData().categoryBits == Constant.PLAYER_BIT) {
-//                Box2DActor player = (Box2DActor)fixtureA.getBody().getUserData();
-//                Box2DActor ghost = (Box2DActor)fixtureB.getBody().getUserData();
-
-
-//                PlayerComponent player = playerM.get((Entity) fixtureA.getBody().getUserData());
-//                GhostComponent ghost = ghostM.get((Entity) fixtureB.getBody().getUserData());
-
-//                if (ghost.currentState == GhostComponent.DIE) {
-//                    return;
-//                }
-//
-//                if (ghost.weaken) {
-//                    // kill ghost
-//                    ghost.hp--;
+//                PlayerComponent player = (PlayerComponent) fixtureA.getBody().getUserData();
+//                GhostComponent ghost = (GhostComponent) fixtureB.getBody().getUserData();
+                PlayerComponent player = ((Entity)fixtureA.getBody().getUserData()).getComponent(PlayerComponent.class);
+                GhostComponent ghost = ((Entity)fixtureB.getBody().getUserData()).getComponent(GhostComponent.class);
+                if (ghost.currentState == GhostComponent.DIE) {
+                    return;
+                }
+                if (ghost.weaken) {
+                    // kill ghost
+                    ghost.hp--;  //这个时候杀死 鬼
 //                    GameManager.instance.addScore(800);
 //                    GameManager.instance.assetManager.get("sounds/ghost_die.ogg", Sound.class).play();
-//                } else // kill player if player is not invincible
-//                {
-//                    if (!GameManager.instance.playerIsInvincible) {
-//                        player.hp--;
-//
-//                        if (GameManager.instance.playerIsAlive) {
+                } else // kill player if player is not invincible
+                {
+                    if (!Constant.playerIsInvincible) {
+                        player.hp--;
+                        if (Constant.playerIsAlive) {
 //                            GameManager.instance.assetManager.get("sounds/pacman_die.ogg", Sound.class).play();
-//                        }
-//                    }
-//                }
-//
-//            } else if (fixtureB.getFilterData().categoryBits == GameManager.PLAYER_BIT) {
-//                PlayerComponent player = playerM.get((Entity) fixtureB.getBody().getUserData());
-//                GhostComponent ghost = ghostM.get((Entity) fixtureA.getBody().getUserData());
-//
-//                if (ghost.currentState == GhostComponent.DIE) {
-//                    return;
-//                }
-//
-//                if (ghost.weaken) {
-//                    // kill ghost
-//                    ghost.hp--;
+                        }
+                    }
+                }
+            } else if (fixtureB.getFilterData().categoryBits == Constant.PLAYER_BIT) {
+                PlayerComponent player = ((Entity)fixtureB.getBody().getUserData()).getComponent(PlayerComponent.class);
+                GhostComponent ghost = ((Entity)fixtureA.getBody().getUserData()).getComponent(GhostComponent.class);
+                if (ghost.currentState == GhostComponent.DIE) {
+                    return;
+                }
+                if (ghost.weaken) {
+                    // kill ghost
+                    ghost.hp--;
 //                    GameManager.instance.addScore(800);
 //                    GameManager.instance.assetManager.get("sounds/ghost_die.ogg", Sound.class).play();
-//                } else {// kill player if player is not invincible
-//                    if (!GameManager.instance.playerIsInvincible) {
-//                        player.hp--;
-//                        if (GameManager.instance.playerIsAlive) {
-//                            GameManager.instance.assetManager.get("sounds/pacman_die.ogg", Sound.class).play();
-//                        }
-//                    }
-//                }
+                } else {// kill player if player is not invincible
+                    if (!Constant.playerIsInvincible) {
+                        player.hp--;
+                        if (Constant.playerIsAlive) {
+//                            Constant.assetManager.get("sounds/pacman_die.ogg", Sound.class).play();
+                        }
+                    }
+                }
             }
         }
     }

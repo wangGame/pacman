@@ -37,11 +37,6 @@ public class GhostComponent implements Component {
         return body;
     }
 
-    public void resPawn(){
-        hp = 1;
-        weaken = true;
-    }
-
     public void respawn() {
         hp = 1;
         weaken = false;
