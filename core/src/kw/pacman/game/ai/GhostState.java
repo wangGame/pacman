@@ -25,7 +25,6 @@ public enum  GhostState implements State<GhostAgent> {
         @Override
         public void update(GhostAgent entity) {
             entity.component.currentState = GhostComponent.MOVE_UP;
-
             Body body = entity.component.getBody();
 //            在一点上施加冲力。这立即修改了速度。如果应用的点不在质心上，它也会修改角速度。这会唤醒身体。
 //            获得质心的世界位置      质心在世界的位置    此向量乘以标量   得到身体的总质量    mv冲量
@@ -43,11 +42,9 @@ public enum  GhostState implements State<GhostAgent> {
                 Integer[] directionChoices = getDirectionChoices(entity, GhostComponent.MOVE_DOWN);
                 //随机的选取一个进行
                 int randomDirectionChoice = getRandomDirectionChoice(directionChoices);
-                for (Integer directionChoice : directionChoices) {
-                    System.out.println(directionChoice);
-                }
-
                 changeState(entity,randomDirectionChoice);
+                GhostComponent component = entity.component;
+                System.out.println("current timer:"+entity.timer);
                 return;
             }
 
@@ -62,10 +59,12 @@ public enum  GhostState implements State<GhostAgent> {
             }
 
 //
-//            减弱      ESCAPE
-            if (entity.component.weaken) {
+//            减弱      ESCAPE  当player吃了big pill之后
+            if (Constant.bigPill) {
+//                进入逃逸
                 entity.component.currentState = GhostComponent.ESCAPE;
 //                实体如果死亡了，就让他重新开始
+                entity.stateMachine.changeState(ESCAPE);
                 if (entity.component.hp <= 0 && inPosition(entity, 0.1f)) {
                     entity.stateMachine.changeState(DIE);
                     return;
@@ -142,7 +141,7 @@ public enum  GhostState implements State<GhostAgent> {
                 return;
             }
 
-            if (entity.timer > 1f && inPosition(entity, 0.05f)) {
+            if (entity.timer > 0.5f && inPosition(entity, 0.05f)) {
                 entity.timer = 0;
                 int newState = getRandomDirectionChoice(getDirectionChoices(entity, GhostComponent.MOVE_RIGHT));
                 if (newState != entity.component.currentState) {
@@ -247,56 +246,54 @@ public enum  GhostState implements State<GhostAgent> {
     },ESCAPE(){
         @Override
         public void update(GhostAgent entity) {
-//            // get away from the player
-//            entity.component.currentState = GhostComponent.ESCAPE;
-//
-//            // update path every 0.2f
-//            if (entity.nextNode == null || entity.timer > 0.2f) {
-//                AStarMap map = Constant.pathfinder.map;
-//
-//                float x = (Constant.playerLocation.getPosition().x + map.getWidth() / 2);
-//
-//                float y = (Constant.playerLocation.getPosition().y + map.getHeight() / 2);
-//
-//                do {
-//                    x += 1;
-//                    y += 1;
-//                    x = x > map.getWidth() ? x - map.getWidth() : x;
-//                    y = y > map.getHeight() ? y - map.getHeight() : y;
-//                } while (map.getNodeAt(MathUtils.floor(x), MathUtils.floor(y)).isWall);
-//
-//                tmpV1.set(x, y);
-//                entity.nextNode = Constant.pathfinder.findNextNode(entity.getPosition(), tmpV1);
-//                entity.timer = 0;
-//            }
-//
-//            if (entity.nextNode == null || !nearPlayer(entity, PURSUE_RADIUS + 1)) {
-//                // no path found or away from the player
-//                changeState(entity, MathUtils.random(0, 3));
-//                return;
-//            }
-//
-//            float x = (entity.nextNode.x - MathUtils.floor(entity.getPosition().x)) * entity.speed;
-//            float y = (entity.nextNode.y - MathUtils.floor(entity.getPosition().y)) * entity.speed;
-//
-//            Body body = entity.component.getBody();
-//
-//            if (body.getLinearVelocity().isZero(0.1f) || inPosition(entity, 0.1f)) {
-//                body.applyLinearImpulse(tmpV1.set(x, y).scl(body.getMass()), body.getWorldCenter(), true);
-//            }
-//
-//            if (body.getLinearVelocity().len2() > entity.speed * entity.speed) {
-//                body.setLinearVelocity(body.getLinearVelocity().scl(entity.speed / body.getLinearVelocity().len()));
-//            }
-//
-//            if (!entity.component.weaken && inPosition(entity, 0.1f)) {
-//                entity.stateMachine.changeState(PURSUE);
-//                return;
-//            }
-//
-//            if (entity.component.hp <= 0 && inPosition(entity, 0.1f)) {
-//                entity.stateMachine.changeState(DIE);
-//            }
+            // get away from the player
+            entity.component.currentState = GhostComponent.ESCAPE;
+            // update path every 0.2f
+            if (entity.nextNode == null || entity.timer > 0.2f) {
+                AStarMap map = Constant.pathfinder.map;
+                //得到玩家位置   ？？?为什么需要加？？？
+                float x = (Constant.playerLocation.getPosition().x + map.getWidth() / 2);
+                float y = (Constant.playerLocation.getPosition().y + map.getHeight() / 2);
+
+                do {
+                    x += 1;
+                    y += 1;
+                    x = x > map.getWidth() ? x - map.getWidth() : x;
+                    y = y > map.getHeight() ? y - map.getHeight() : y;
+                } while (map.getNodeAt(MathUtils.floor(x), MathUtils.floor(y)).isWall);
+
+                tmpV1.set(x, y);
+                entity.nextNode = Constant.pathfinder.findNextNode(entity.getPosition(), tmpV1);
+                entity.timer = 0;
+            }
+
+            if (entity.nextNode == null || !nearPlayer(entity, PURSUE_RADIUS + 1)) {
+                // no path found or away from the player
+                changeState(entity, MathUtils.random(0, 3));
+                return;
+            }
+
+            float x = (entity.nextNode.x - MathUtils.floor(entity.getPosition().x)) * entity.speed;
+            float y = (entity.nextNode.y - MathUtils.floor(entity.getPosition().y)) * entity.speed;
+
+            Body body = entity.component.getBody();
+
+            if (body.getLinearVelocity().isZero(0.1f) || inPosition(entity, 0.1f)) {
+                body.applyLinearImpulse(tmpV1.set(x, y).scl(body.getMass()), body.getWorldCenter(), true);
+            }
+
+            if (body.getLinearVelocity().len2() > entity.speed * entity.speed) {
+                body.setLinearVelocity(body.getLinearVelocity().scl(entity.speed / body.getLinearVelocity().len()));
+            }
+
+            if (!entity.component.weaken && inPosition(entity, 0.1f)) {
+                entity.stateMachine.changeState(PURSUE);
+                return;
+            }
+
+            if (entity.component.hp <= 0 && inPosition(entity, 0.1f)) {
+                entity.stateMachine.changeState(DIE);
+            }
 
         }
     },PURSUE(){
@@ -441,9 +438,21 @@ public enum  GhostState implements State<GhostAgent> {
     protected static final List<Integer> choicesList = new ArrayList<>(4);
 
 
+    /**
+     * 每一种状态进入 都会执行，所以它是一个一直执行的方法
+     * @param entity
+     */
     @Override
     public void enter(GhostAgent entity) {
-
+        //每次进入冲量置0
+        entity.component.getBody().setLinearVelocity(0, 0);
+        if (!inPosition(entity, 0.1f)) {
+            //位置 旋转角
+            entity.component.getBody().setTransform(tmpV1.set(MathUtils.floor(entity.getPosition().x) + 0.5f,
+                    MathUtils.floor(entity.getPosition().y) + 0.5f), 0);
+        }
+        entity.timer = 0;
+        System.out.println("=======>enter");
     }
 
     @Override
@@ -470,13 +479,15 @@ public enum  GhostState implements State<GhostAgent> {
             case GhostComponent.MOVE_RIGHT:
                 ghostAgent.stateMachine.changeState(MOVE_RIGHT);
                 break;
+            case GhostComponent.ESCAPE:
+                ghostAgent.stateMachine.changeState(ESCAPE);
             default:
                 break;
         }
     }
 
     public Array<Short> choiceArray = new Array<>();
-    public Integer[] getDirectionChoices(GhostAgent ghostAgent,short stage){
+    public Integer[] getDirectionChoices(GhostAgent ghostAgent,short dir){
         Body body = ghostAgent.component.getBody();
         World world = body.getWorld();
         choiceArray.clear();
@@ -486,7 +497,7 @@ public enum  GhostState implements State<GhostAgent> {
         }
 
         //不要走回头路
-        choiceArray.removeValue(stage,false);
+        choiceArray.removeValue(dir,false);
         tmpV1.set(body.getWorldCenter());  //质心位置
 
         Array<Short> arrayTemp = new Array<>(choiceArray);
@@ -519,6 +530,7 @@ public enum  GhostState implements State<GhostAgent> {
         Integer[] result = choicesList.toArray(new Integer[choiceArray.size]);
         for (int i = 0; i < choiceArray.size; i++) {
             result[i] = Integer.valueOf(Short.valueOf(choiceArray.get(i)));
+            System.out.println(choiceArray.get(i)+"Ghost dir");
         }
         return result;
     }

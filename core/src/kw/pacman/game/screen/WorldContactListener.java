@@ -30,10 +30,12 @@ public class WorldContactListener implements ContactListener {
                 Entity pill = (Entity)fixtureB.getUserData();
                 PillComponent pillComponent = pill.getComponent(PillComponent.class);
                 pillComponent.eaten = true;
+                Constant.bigPill = pillComponent.isBig;
             } else if (fixtureB.getFilterData().categoryBits == Constant.PLAYER_BIT) {
                 Entity pill = (Entity)fixtureA.getUserData();
                 PillComponent pillComponent = pill.getComponent(PillComponent.class);
                 pillComponent.eaten = true;
+                Constant.bigPill = pillComponent.isBig;
             }
         } else if (fixtureA.getFilterData().categoryBits == Constant.GHOST_BIT ||
                 fixtureB.getFilterData().categoryBits == Constant.GHOST_BIT) {

@@ -38,7 +38,7 @@ public class Constant {
     public static Box2DDebugRenderer box2DDebugRenderer;
     public static int pillNum = 0;
 
-    public static boolean bigPill = false;
+    public static boolean bigPill = true;
     public static Location<Vector2> playerLocation;
     public static boolean playerIsAlive;
     public static boolean playerIsInvincible;

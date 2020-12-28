@@ -23,6 +23,8 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Group;
 
 import kw.pacman.game.actor.Box2DActor;
+import kw.pacman.game.ai.astar.AStarMap;
+import kw.pacman.game.ai.astar.AStartPathFinding;
 import kw.pacman.game.components.GhostComponent;
 import kw.pacman.game.components.MoveComponent;
 import kw.pacman.game.components.PillComponent;
@@ -52,6 +54,28 @@ public class MainWorldView extends Group {
         MapLayers mapLayers = tiledMap.getLayers();
         int mapWidth = ((TiledMapTileLayer) mapLayers.get(0)).getWidth();
         int mapHeight = ((TiledMapTileLayer) mapLayers.get(0)).getHeight();
+        /**
+         * create A star
+         */
+        AStarMap aStarMap = new AStarMap(mapWidth,mapHeight);
+        QueryCallback queryCallback = new QueryCallback() {
+            @Override
+            public boolean reportFixture(Fixture fixture) {
+                wall = fixture.getFilterData().categoryBits == Constant.WALL_BIT;
+                return false; // stop finding other fixtures in the query area
+            }
+        };
+        for (int i = 0; i < mapHeight; i++) {
+            for (int j = 0; j < mapWidth; j++) {
+                wall = false;
+                world.QueryAABB(queryCallback,x+0.2F,y+0.2F,x+0.8F,y+0.8F);
+                if (wall){
+                    aStarMap.getNodeAt(i,j).isWall = true;
+                }
+            }
+        }
+        Constant.pathfinder = new AStartPathFinding(aStarMap);
+
         MapLayer wallLayer = mapLayers.get("Wall");
         for (MapObject mapObject : wallLayer.getObjects()) {
             Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();

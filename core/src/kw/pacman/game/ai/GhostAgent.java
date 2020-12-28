@@ -28,8 +28,9 @@ public class GhostAgent implements Telegraph {
     }
 
     public void update(float deltaTime){
-        stateMachine.update();
         timer += deltaTime;
+        stateMachine.update();
+
     }
 
     @Override

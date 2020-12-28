@@ -42,6 +42,7 @@ public class GhostSystem extends IteratingSystem {
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);   //update
-        Constant.bigPill = false;
+        Constant.bigPill = true;
+
     }
 }
