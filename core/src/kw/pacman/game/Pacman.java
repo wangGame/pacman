@@ -20,6 +20,7 @@ public class Pacman extends Game {
     private OrthographicCamera camera;
     @Override
     public void create() {
+        //正交
         camera  = Constant.camera = new OrthographicCamera();
         camera.translate(19.0F/2,23.0F/2);
         camera.update();
