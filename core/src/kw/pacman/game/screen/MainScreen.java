@@ -55,7 +55,6 @@ public class MainScreen extends BaseMapScreen {
         addSystem();
         MainWorldView view = new MainWorldView(engine);
         view.mapWorldView(tiledMap,world);
-        fillStage.addActor(view);
         initPanelView();
         initWordListener();
     }
@@ -79,9 +78,9 @@ public class MainScreen extends BaseMapScreen {
     }
 
     private void initPanelView() {
-//        Image image = new Image(new Texture("tip.png"));
-//        stage.addActor(image);
-//        image.setPosition(Constant.width/2,Constant.height, Align.top);
+        Image image = new Image(new Texture("images/actors.png"));
+        stage.addActor(image);
+        image.setPosition(100,1000);
     }
 
 

@@ -22,20 +22,28 @@ public class Pacman extends Game {
     public void create() {
         //正交
         camera  = Constant.camera = new OrthographicCamera();
-        camera.translate(19.0F/2,23.0F/2);
-        camera.update();
-        Constant.fillViewport = new FillViewport(19,23,camera);
+//        camera.translate(19.0F/2,23.0F/2);
+//        camera.update();
+        camera.translate(19,23);
+        camera.update(true);
+        //转换
+        camera.setToOrtho(false,19,23);
         Constant.batch = new SpriteBatch();
+        Constant.batch.setProjectionMatrix(camera.combined);
         Constant.game = this;
         Constant.assetManager = new AssetManager();
         Constant.world = new World(Vector2.Zero, true);
         Constant.box2DDebugRenderer = new Box2DDebugRenderer();
+        Constant.viewport = new ExtendViewport(720,1280);
+        resize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         setScreen(new MainScreen());
     }
 
     @Override
     public void resize(int width, int height) {
         super.resize(width, height);
+        Constant.viewport.update(width,height);
+        Constant.viewport.apply();
     }
 
     @Override

@@ -21,14 +21,13 @@ public class BaseMapScreen extends BaseScreen {
     protected static TiledMap tiledMap;
     protected OrthographicCamera camera;
     protected World world;
-    protected Stage fillStage;
     public BaseMapScreen(String path){
         engine = new Engine();
         tiledMap = new TmxMapLoader().load(path);
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap,1/16f, new SpriteBatch());
         camera = Constant.camera;
         world = Constant.world;
-        fillStage = new Stage(Constant.fillViewport,Constant.batch);
+        System.out.println("====>>>>>>");
     }
 
     @Override
@@ -56,11 +55,9 @@ public class BaseMapScreen extends BaseScreen {
     public void render(float delta) {
         tiledMapRenderer.setView(Constant.camera);
         tiledMapRenderer.render();
-        fillStage.act();
-        fillStage.draw();
+        Constant.batch.setProjectionMatrix(camera.combined);
         Constant.world.step(1/60f,8,3);
         engine.update(delta);
-//        Constant.box2DDebugRenderer.render(Constant.world, camera.combined);
         super.render(delta);
     }
 

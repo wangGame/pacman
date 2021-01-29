@@ -44,6 +44,7 @@ public class RenderSystem extends IteratingSystem {
                 return transform2.zIndex - transform1.zIndex;
             }
         });
+        batch.setProjectionMatrix(Constant.camera.combined);
         batch.begin();
         for (Entity entity : renderArray) {
             TransformComponent transform = transformM.get(entity);
@@ -59,7 +60,6 @@ public class RenderSystem extends IteratingSystem {
                     transform.scale.x, transform.scale.y,
                     transform.rotation * MathUtils.radiansToDegrees);
         }
-
         batch.end();
         renderArray.clear();
     }

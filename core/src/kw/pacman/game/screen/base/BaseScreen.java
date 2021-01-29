@@ -3,6 +3,8 @@ package kw.pacman.game.screen.base;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.g2d.CpuSpriteBatch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -11,8 +13,10 @@ import kw.pacman.game.constant.Constant;
 
 public abstract class BaseScreen implements Screen {
     protected InputMultiplexer inputMultiplexer;
+    protected Stage stage;
     @Override
     public void show() {
+        stage = new Stage(Constant.viewport,Constant.batch);
         inputMultiplexer = new InputMultiplexer();
         Gdx.input.setInputProcessor(inputMultiplexer);
         initData();
@@ -29,7 +33,8 @@ public abstract class BaseScreen implements Screen {
 
     @Override
     public void render(float delta) {
-
+        stage.act();
+        stage.draw();
     }
 
     @Override
