@@ -41,7 +41,7 @@ import kw.test.pacmen.manger.MyGameManager;
 public class MyWorldBuilder {
     private final TiledMap tiledMap;
     private final World world;
-    private final RayHandler rayHandler;
+//    private final RayHandler rayHandler;
     private final Engine engine;
     private final AssetManager assetManager;
     private final TextureAtlas atlas;
@@ -51,7 +51,6 @@ public class MyWorldBuilder {
         this.tiledMap = tiledMap;
         this.engine = engine;
         this.world = world;
-        this.rayHandler = rayHandler;
         assetManager = MyGameManager.getinstance().assetManager;
         atlas = assetManager.get("images/actors.pack",TextureAtlas.class);
     }
@@ -162,7 +161,7 @@ public class MyWorldBuilder {
             entity.add(new MyTexureComponent(textureRegion));
             entity.add(new MyMovementComponent(body));
 
-            engine.addEntity(entity);
+//            engine.addEntity(entity);
             body.setUserData(entity);
             MyGameManager.getinstance().totalPills++;
         }
@@ -212,11 +211,11 @@ public class MyWorldBuilder {
         circleShape.dispose();
 
         // box2d light
-        PointLight pointLight = new PointLight(rayHandler, 50, new Color(0.5f, 0.5f, 0.5f, 1.0f), 12f, 0, 0);
-        pointLight.setContactFilter(MyGameManager.LIGHT_BIT, MyGameManager.NOTHING_BIT, MyGameManager.WALL_BIT);
-        pointLight.setSoft(true);
-        pointLight.setSoftnessLength(2.0f);
-        pointLight.attachToBody(body);
+//        PointLight pointLight = new PointLight(rayHandler, 50, new Color(0.5f, 0.5f, 0.5f, 1.0f), 12f, 0, 0);
+//        pointLight.setContactFilter(MyGameManager.LIGHT_BIT, MyGameManager.NOTHING_BIT, MyGameManager.WALL_BIT);
+//        pointLight.setSoft(true);
+//        pointLight.setSoftnessLength(2.0f);
+//        pointLight.attachToBody(body);
 
         TextureRegion textureRegion = new TextureRegion(atlas.findRegion("Pacman"), 0, 0, 16, 16);
 
@@ -303,7 +302,7 @@ public class MyWorldBuilder {
 
         entity.add(animationComponent);
 
-        engine.addEntity(entity);
+//        engine.addEntity(entity);
         body.setUserData(entity);
     }
     private void createGhost(float x,float y,int index){
@@ -327,11 +326,11 @@ public class MyWorldBuilder {
         body.createFixture(fixtureDef);
 
         // box2d light
-        PointLight pointLight = new PointLight(rayHandler, 50, new Color(0.2f, 0.2f, 0.2f, 1.0f), 12f, 0, 0);
-        pointLight.setContactFilter(MyGameManager.LIGHT_BIT, MyGameManager.NOTHING_BIT, MyGameManager.WALL_BIT);
-        pointLight.setSoft(true);
-        pointLight.setSoftnessLength(5.0f);
-        pointLight.attachToBody(body);
+//        PointLight pointLight = new PointLight(rayHandler, 50, new Color(0.2f, 0.2f, 0.2f, 1.0f), 12f, 0, 0);
+//        pointLight.setContactFilter(MyGameManager.LIGHT_BIT, MyGameManager.NOTHING_BIT, MyGameManager.WALL_BIT);
+//        pointLight.setSoft(true);
+//        pointLight.setSoftnessLength(5.0f);
+//        pointLight.attachToBody(body);
         circleShape.dispose();
 
         //texture
@@ -402,7 +401,7 @@ public class MyWorldBuilder {
         entity.add(new MyTexureComponent(new TextureRegion(textureRegion,
                 0,0,16,16)));
         entity.add(anim);
-        engine.addEntity(entity);
+//        engine.addEntity(entity);
         body.setUserData(entity);
     }
     // make rectangle correct position and dimensions

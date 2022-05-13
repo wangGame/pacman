@@ -96,8 +96,8 @@ public class MyPlayerSystem extends IteratingSystem {
             }
         }
 
-//        player.playerAgent.update(deltaTime);
-//        state.setState(player.currentState);
+        player.playerAgent.update(deltaTime);
+        state.setState(player.currentState);
     }
 
     @Override
