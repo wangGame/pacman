@@ -1,0 +1,28 @@
+package kw.test.pacmen;
+
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Align;
+
+import kw.test.pacmen.constant.Constant;
+import kw.test.pacmen.manger.MyGameManager;
+
+public class BodyImage extends Image {
+    private Body body;
+
+    public BodyImage(TextureRegion textureRegion) {
+        super(textureRegion);
+    }
+
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+        setPosition(body.getPosition().x * MyGameManager.PPM
+                ,body.getPosition().y * MyGameManager.PPM, Align.center);
+    }
+
+    public void setBody(Body body) {
+        this.body = body;
+    }
+}

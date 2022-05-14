@@ -12,7 +12,6 @@ public class MyGameManager implements Disposable {
 //    short
 
     public static final float PPM = 16f;
-
     public static final short NOTHING_BIT = 0;
     public static final short WALL_BIT = 1;
     public static final short PLAYER_BIT = 1 << 1;
@@ -20,6 +19,8 @@ public class MyGameManager implements Disposable {
     public static final short GHOST_BIT = 1 << 3;
     public static final short GATE_BIT = 1 << 4;
     public static final short LIGHT_BIT = 1 << 5;
+
+    public static int currentdir = 0;
 
 
     private static MyGameManager instance;

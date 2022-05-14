@@ -2,6 +2,7 @@ package kw.test.pacmen.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.sun.xml.internal.bind.v2.model.core.ID;
 
 import kw.test.pacmen.ai.MyPlayerAi;
 import kw.test.pacmen.ai.fsm.MyPlayerAgent;
@@ -14,6 +15,8 @@ public class MyPlayerComponent implements Component {
     public static final int IDLE_DOWN = 1;
     public static final int IDLE_LEFT = 2;
     public static final int IDLE_RIGHT = 3;
+
+    public static int CURRENT_DIR = IDLE;
 
 
     public static final int MOVE_UP = 4;

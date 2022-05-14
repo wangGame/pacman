@@ -23,9 +23,14 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
+
+
 import box2dLight.PointLight;
 import box2dLight.RayHandler;
+import kw.test.pacmen.AnimationActor;
+import kw.test.pacmen.BodyImage;
 import kw.test.pacmen.ai.astar.MyAStarMap;
 import kw.test.pacmen.ai.astar.MyAstartPathFinding;
 import kw.test.pacmen.components.MyAnimationComponent;
@@ -46,8 +51,10 @@ public class MyWorldBuilder {
     private final AssetManager assetManager;
     private final TextureAtlas atlas;
     private boolean wall;
+    private Group gameView;
 
-    public MyWorldBuilder(TiledMap tiledMap,Engine engine,World world,RayHandler rayHandler){
+    public MyWorldBuilder(TiledMap tiledMap, Engine engine, World world, RayHandler rayHandler, Group gameView){
+        this.gameView = gameView;
         this.tiledMap = tiledMap;
         this.engine = engine;
         this.world = world;
@@ -59,7 +66,6 @@ public class MyWorldBuilder {
         MapLayers mapLayers = tiledMap.getLayers();
         int mapWidth = ((TiledMapTileLayer)mapLayers.get(0)).getWidth();
         int mapHeight = ((TiledMapTileLayer)mapLayers.get(0)).getHeight();
-
         MapLayer wallLayer = mapLayers.get("Wall"); // wall layer
         for (MapObject mapObject : wallLayer.getObjects()) {
             Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
@@ -67,7 +73,6 @@ public class MyWorldBuilder {
             BodyDef bodyDef = new BodyDef();
             bodyDef.type = BodyDef.BodyType.StaticBody;
             bodyDef.position.set(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
-
             Body body = world.createBody(bodyDef);
             PolygonShape polygonShape = new PolygonShape();
             polygonShape.setAsBox(rectangle.width / 2, rectangle.height / 2);
@@ -130,7 +135,7 @@ public class MyWorldBuilder {
             boolean isBig = false;
             float radius = 0.1F;
             TextureRegion textureRegion;
-
+            BodyImage bodyImage;
             if (mapObject.getProperties().containsKey("big")){
                 isBig = true;
                 radius = 0.2F;
@@ -138,7 +143,7 @@ public class MyWorldBuilder {
             }else {
                 textureRegion = new TextureRegion(atlas.findRegion("Pill"), 0, 0, 16, 16);
             }
-
+            bodyImage = new BodyImage(textureRegion);
             BodyDef bodyDef = new BodyDef();
             bodyDef.type = BodyDef.BodyType.DynamicBody;
             bodyDef.position.set(rectangle.x+rectangle.width/2,rectangle.y+rectangle.height/2);
@@ -158,8 +163,10 @@ public class MyWorldBuilder {
             entity.add(new MyPillComponent(isBig));
             entity.add(new MyTransformComponent(rectangle.x + rectangle.width/2,
                     rectangle.y + rectangle.height/2,5));
-            entity.add(new MyTexureComponent(textureRegion));
+//            entity.add(new MyTexureComponent(textureRegion));
             entity.add(new MyMovementComponent(body));
+            bodyImage.setBody(body);
+            gameView.addActor(bodyImage);
 
 //            engine.addEntity(entity);
             body.setUserData(entity);
@@ -183,23 +190,22 @@ public class MyWorldBuilder {
         MapLayer mapLayer = mapLayers.get("Player");
         for (MapObject object : mapLayer.getObjects()) {
             Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
-
             correctRectangle(rectangle);
-
             MyGameManager.getinstance().playerSpawnPos.set(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
-
             createPlayer(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
         }
     }
 
     private void createPlayer(float x, float y) {
+        AnimationActor animationActor = new AnimationActor();
+        gameView.addActor(animationActor);
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(x, y);
         bodyDef.linearDamping = 16f;
 
         Body body = world.createBody(bodyDef);
-
+        animationActor.setBody(body);
         CircleShape circleShape = new CircleShape();
         circleShape.setRadius(0.45f);
         FixtureDef fixtureDef = new FixtureDef();
@@ -236,25 +242,25 @@ public class MyWorldBuilder {
         // idle
         keyFrames.add(new TextureRegion(atlas.findRegion("Pacman"), 16 * 1, 0, 16, 16));
         animation = new Animation(0.2f, keyFrames);
-        animationComponent.animations.put(MyPlayerComponent.IDLE_RIGHT, animation);
+        animationActor.addAnimation(MyPlayerComponent.IDLE_RIGHT, animation);
 
         keyFrames.clear();
 
         keyFrames.add(new TextureRegion(atlas.findRegion("Pacman"), 16 * 3, 0, 16, 16));
         animation = new Animation(0.2f, keyFrames);
-        animationComponent.animations.put(MyPlayerComponent.IDLE_LEFT, animation);
+        animationActor.addAnimation(MyPlayerComponent.IDLE_LEFT, animation);
 
         keyFrames.clear();
 
         keyFrames.add(new TextureRegion(atlas.findRegion("Pacman"), 16 * 5, 0, 16, 16));
         animation = new Animation(0.2f, keyFrames);
-        animationComponent.animations.put(MyPlayerComponent.IDLE_UP, animation);
+        animationActor.addAnimation(MyPlayerComponent.IDLE_UP, animation);
 
         keyFrames.clear();
 
         keyFrames.add(new TextureRegion(atlas.findRegion("Pacman"), 16 * 7, 0, 16, 16));
         animation = new Animation(0.2f, keyFrames);
-        animationComponent.animations.put(MyPlayerComponent.IDLE_DOWN, animation);
+        animationActor.addAnimation(MyPlayerComponent.IDLE_DOWN, animation);
 
         keyFrames.clear();
 
@@ -263,7 +269,7 @@ public class MyWorldBuilder {
             keyFrames.add(new TextureRegion(atlas.findRegion("Pacman"), i * 16, 0, 16, 16));
         }
         animation = new Animation(0.2f, keyFrames, Animation.PlayMode.LOOP);
-        animationComponent.animations.put(MyPlayerComponent.MOVE_RIGHT, animation);
+        animationActor.addAnimation(MyPlayerComponent.MOVE_RIGHT, animation);
 
         keyFrames.clear();
 
@@ -271,7 +277,7 @@ public class MyWorldBuilder {
             keyFrames.add(new TextureRegion(atlas.findRegion("Pacman"), i * 16, 0, 16, 16));
         }
         animation = new Animation(0.2f, keyFrames, Animation.PlayMode.LOOP);
-        animationComponent.animations.put(MyPlayerComponent.MOVE_LEFT, animation);
+        animationActor.addAnimation(MyPlayerComponent.MOVE_LEFT, animation);
 
         keyFrames.clear();
 
@@ -279,7 +285,7 @@ public class MyWorldBuilder {
             keyFrames.add(new TextureRegion(atlas.findRegion("Pacman"), i * 16, 0, 16, 16));
         }
         animation = new Animation(0.2f, keyFrames, Animation.PlayMode.LOOP);
-        animationComponent.animations.put(MyPlayerComponent.MOVE_UP, animation);
+        animationActor.addAnimation(MyPlayerComponent.MOVE_UP, animation);
 
         keyFrames.clear();
 
@@ -287,7 +293,7 @@ public class MyWorldBuilder {
             keyFrames.add(new TextureRegion(atlas.findRegion("Pacman"), i * 16, 0, 16, 16));
         }
         animation = new Animation(0.2f, keyFrames, Animation.PlayMode.LOOP);
-        animationComponent.animations.put(MyPlayerComponent.MOVE_DOWN, animation);
+        animationActor.addAnimation(MyPlayerComponent.MOVE_DOWN, animation);
 
         keyFrames.clear();
 
@@ -296,21 +302,25 @@ public class MyWorldBuilder {
         }
         keyFrames.add(new TextureRegion(atlas.findRegion("Pacman"), 9 * 16, 0, 16, 16)); // invisible
         animation = new Animation(0.1f, keyFrames, Animation.PlayMode.NORMAL);
-        animationComponent.animations.put(MyPlayerComponent.DIE, animation);
+        animationActor.addAnimation(MyPlayerComponent.DIE, animation);
 
         keyFrames.clear();
+        animationActor.setAniType(MyPlayerComponent.MOVE_LEFT);
 
-        entity.add(animationComponent);
+//        entity.add(animationComponent);
 
 //        engine.addEntity(entity);
         body.setUserData(entity);
     }
     private void createGhost(float x,float y,int index){
+        AnimationActor animationActor = new AnimationActor();
+        gameView.addActor(animationActor);
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(x, y);
 
         Body body = world.createBody(bodyDef);
+        animationActor.setBody(body);
         CircleShape circleShape = new CircleShape();
         circleShape.setRadius(0.4f);
         FixtureDef fixtureDef = new FixtureDef();
@@ -345,7 +355,7 @@ public class MyWorldBuilder {
                     i*16,index*16,16,16));
         }
         animation = new Animation(0.2F,keyFrames,Animation.PlayMode.LOOP);
-        anim.animations.put(MyGhostComponent.MOVE_RIGHT,animation);
+        animationActor.addAnimation(MyGhostComponent.MOVE_RIGHT,animation);
 
         keyFrames.clear();
 
@@ -354,7 +364,7 @@ public class MyWorldBuilder {
             keyFrames.add(new TextureRegion(textureRegion,i*16,index*16,16,16));
         }
         animation = new Animation(0.2F,keyFrames, Animation.PlayMode.LOOP);
-        anim.animations.put(MyGhostComponent.MOVE_RIGHT,animation);
+        animationActor.addAnimation(MyGhostComponent.MOVE_RIGHT,animation);
 
         keyFrames.clear();
 
@@ -363,7 +373,7 @@ public class MyWorldBuilder {
             keyFrames.add(new TextureRegion(textureRegion, i * 16, index * 16, 16, 16));
         }
         animation = new Animation(0.2f, keyFrames, Animation.PlayMode.LOOP);
-        anim.animations.put(MyGhostComponent.MOVE_UP, animation);
+        animationActor.addAnimation(MyGhostComponent.MOVE_UP, animation);
 
         keyFrames.clear();
 
@@ -372,7 +382,7 @@ public class MyWorldBuilder {
             keyFrames.add(new TextureRegion(textureRegion, i * 16, index * 16, 16, 16));
         }
         animation = new Animation(0.2f, keyFrames, Animation.PlayMode.LOOP);
-        anim.animations.put(MyGhostComponent.MOVE_DOWN, animation);
+        animationActor.addAnimation(MyGhostComponent.MOVE_DOWN, animation);
 
         keyFrames.clear();
 
@@ -381,7 +391,7 @@ public class MyWorldBuilder {
             keyFrames.add(new TextureRegion(textureRegion, i * 16, 16 * 4, 16, 16));
         }
         animation = new Animation(0.2f, keyFrames, Animation.PlayMode.LOOP);
-        anim.animations.put(MyGhostComponent.ESCAPE, animation);
+        animationActor.addAnimation(MyGhostComponent.ESCAPE, animation);
 
         keyFrames.clear();
 
@@ -390,7 +400,7 @@ public class MyWorldBuilder {
             keyFrames.add(new TextureRegion(textureRegion, i * 16, 16 * 4, 16, 16));
         }
         animation = new Animation(0.2f, keyFrames, Animation.PlayMode.LOOP);
-        anim.animations.put(MyGhostComponent.DIE, animation);
+        animationActor.addAnimation(MyGhostComponent.DIE, animation);
 
         MyGhostComponent ghostComponent = new MyGhostComponent(body);
         Entity entity = new Entity();
@@ -400,9 +410,10 @@ public class MyWorldBuilder {
         entity.add(new MyStateComponent());
         entity.add(new MyTexureComponent(new TextureRegion(textureRegion,
                 0,0,16,16)));
-        entity.add(anim);
+//        entity.add(anim);
 //        engine.addEntity(entity);
         body.setUserData(entity);
+        animationActor.initAnimation(MyGhostComponent.MOVE_UP);
     }
     // make rectangle correct position and dimensions
     private void correctRectangle(Rectangle rectangle) {
