@@ -5,13 +5,9 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.Array;
 
 import java.util.HashMap;
 
-import kw.test.pacmen.ai.fsm.MyGhostAgent;
-import kw.test.pacmen.components.MyAnimationComponent;
-import kw.test.pacmen.components.MyGhostComponent;
 import kw.test.pacmen.manger.MyGameManager;
 
 public class AnimationActor extends Actor {
@@ -20,8 +16,14 @@ public class AnimationActor extends Actor {
     private float time;
     private TextureRegion region;
     private Body body;
+    private boolean die;
+
     public AnimationActor(){
 
+    }
+
+    public void setDie(boolean die) {
+        this.die = die;
     }
 
     public void setBody(Body body) {
@@ -50,6 +52,10 @@ public class AnimationActor extends Actor {
         time += delta;
         if (body!=null) {
             setPosition(body.getPosition().x* MyGameManager.PPM,body.getPosition().y*MyGameManager.PPM);
+        }
+
+        if (die){
+            remove();
         }
     }
 

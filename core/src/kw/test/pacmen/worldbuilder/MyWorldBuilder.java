@@ -1,9 +1,6 @@
 package kw.test.pacmen.worldbuilder;
 
-import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -13,8 +10,8 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -27,36 +24,28 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
 
 
-import box2dLight.PointLight;
 import box2dLight.RayHandler;
 import kw.test.pacmen.AnimationActor;
 import kw.test.pacmen.BodyImage;
+import kw.test.pacmen.GhostActor;
+import kw.test.pacmen.PlayerActor;
 import kw.test.pacmen.ai.astar.MyAStarMap;
 import kw.test.pacmen.ai.astar.MyAstartPathFinding;
-import kw.test.pacmen.components.MyAnimationComponent;
 import kw.test.pacmen.components.MyGhostComponent;
-import kw.test.pacmen.components.MyMovementComponent;
-import kw.test.pacmen.components.MyPillComponent;
 import kw.test.pacmen.components.MyPlayerComponent;
-import kw.test.pacmen.components.MyStateComponent;
-import kw.test.pacmen.components.MyTexureComponent;
-import kw.test.pacmen.components.MyTransformComponent;
 import kw.test.pacmen.manger.MyGameManager;
 
 public class MyWorldBuilder {
     private final TiledMap tiledMap;
     private final World world;
-//    private final RayHandler rayHandler;
-    private final Engine engine;
     private final AssetManager assetManager;
     private final TextureAtlas atlas;
     private boolean wall;
     private Group gameView;
 
-    public MyWorldBuilder(TiledMap tiledMap, Engine engine, World world, RayHandler rayHandler, Group gameView){
+    public MyWorldBuilder(TiledMap tiledMap, World world, RayHandler rayHandler, Group gameView){
         this.gameView = gameView;
         this.tiledMap = tiledMap;
-        this.engine = engine;
         this.world = world;
         assetManager = MyGameManager.getinstance().assetManager;
         atlas = assetManager.get("images/actors.pack",TextureAtlas.class);
@@ -132,18 +121,19 @@ public class MyWorldBuilder {
         for (MapObject mapObject : pillLayer.getObjects()) {
             Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
             correctRectangle(rectangle);
-            boolean isBig = false;
             float radius = 0.1F;
             TextureRegion textureRegion;
             BodyImage bodyImage;
+            boolean isBig = true;
             if (mapObject.getProperties().containsKey("big")){
-                isBig = true;
                 radius = 0.2F;
                 textureRegion = new TextureRegion(atlas.findRegion("Pill"), 16, 0, 16, 16);
             }else {
+                isBig = false;
                 textureRegion = new TextureRegion(atlas.findRegion("Pill"), 0, 0, 16, 16);
             }
             bodyImage = new BodyImage(textureRegion);
+            bodyImage.setBig(isBig);
             BodyDef bodyDef = new BodyDef();
             bodyDef.type = BodyDef.BodyType.DynamicBody;
             bodyDef.position.set(rectangle.x+rectangle.width/2,rectangle.y+rectangle.height/2);
@@ -159,26 +149,23 @@ public class MyWorldBuilder {
             circleShape.dispose();
 
             //创建一个实体
-            Entity entity = new Entity();
-            entity.add(new MyPillComponent(isBig));
-            entity.add(new MyTransformComponent(rectangle.x + rectangle.width/2,
-                    rectangle.y + rectangle.height/2,5));
-//            entity.add(new MyTexureComponent(textureRegion));
-            entity.add(new MyMovementComponent(body));
+//            Entity entity = new Entity();
+//            entity.add(new MyPillComponent(isBig));
+//            entity.add(new MyTransformComponent(rectangle.x + rectangle.width/2,
+//                    rectangle.y + rectangle.height/2,5));
+////            entity.add(new MyTexureComponent(textureRegion));
+//            entity.add(new MyMovementComponent(body));
             bodyImage.setBody(body);
             gameView.addActor(bodyImage);
 
 //            engine.addEntity(entity);
-            body.setUserData(entity);
             MyGameManager.getinstance().totalPills++;
         }
 
         MapLayer ghostLayer = mapLayers.get("Ghost");
         for (MapObject mapObject : ghostLayer.getObjects()) {
             Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
-
             correctRectangle(rectangle);
-
             MyGameManager.getinstance().ghostSpawnPos.set(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
 
             // create four ghosts
@@ -196,16 +183,21 @@ public class MyWorldBuilder {
         }
     }
 
+    private Body playerBody;
+
+    public Body getPlayerBody() {
+        return playerBody;
+    }
+
     private void createPlayer(float x, float y) {
-        AnimationActor animationActor = new AnimationActor();
+        PlayerActor animationActor = new PlayerActor();
         gameView.addActor(animationActor);
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(x, y);
         bodyDef.linearDamping = 16f;
-
-        Body body = world.createBody(bodyDef);
-        animationActor.setBody(body);
+        playerBody = world.createBody(bodyDef);
+        animationActor.setBody(playerBody);
         CircleShape circleShape = new CircleShape();
         circleShape.setRadius(0.45f);
         FixtureDef fixtureDef = new FixtureDef();
@@ -213,7 +205,8 @@ public class MyWorldBuilder {
         fixtureDef.filter.categoryBits = MyGameManager.PLAYER_BIT;
         fixtureDef.filter.maskBits = MyGameManager.WALL_BIT | MyGameManager.GATE_BIT |
                 MyGameManager.GHOST_BIT | MyGameManager.PILL_BIT;
-        body.createFixture(fixtureDef);
+        playerBody.createFixture(fixtureDef);
+        playerBody.setUserData(animationActor);
         circleShape.dispose();
 
         // box2d light
@@ -225,17 +218,17 @@ public class MyWorldBuilder {
 
         TextureRegion textureRegion = new TextureRegion(atlas.findRegion("Pacman"), 0, 0, 16, 16);
 
-        MyPlayerComponent player = new MyPlayerComponent(body);
+        MyPlayerComponent player = new MyPlayerComponent(playerBody);
         MyGameManager.getinstance().playerLocation = player.ai;
 
-        Entity entity = new Entity();
-        entity.add(player);
-        entity.add(new MyTransformComponent(x, y, 1));
-        entity.add(new MyMovementComponent(body));
-        entity.add(new MyStateComponent(MyPlayerComponent.IDLE_RIGHT));
-        entity.add(new MyTexureComponent(textureRegion));
+//        Entity entity = new Entity();
+//        entity.add(player);
+//        entity.add(new MyTransformComponent(x, y, 1));
+//        entity.add(new MyMovementComponent(body));
+//        entity.add(new MyStateComponent(MyPlayerComponent.IDLE_RIGHT));
+//        entity.add(new MyTexureComponent(textureRegion));
 
-        MyAnimationComponent animationComponent = new MyAnimationComponent();
+//        MyAnimationComponent animationComponent = new MyAnimationComponent();
         Animation animation;
         Array<TextureRegion> keyFrames = new Array<>();
 
@@ -310,10 +303,10 @@ public class MyWorldBuilder {
 //        entity.add(animationComponent);
 
 //        engine.addEntity(entity);
-        body.setUserData(entity);
+//        body.setUserData(entity);
     }
     private void createGhost(float x,float y,int index){
-        AnimationActor animationActor = new AnimationActor();
+        GhostActor animationActor = new GhostActor();
         gameView.addActor(animationActor);
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -345,7 +338,7 @@ public class MyWorldBuilder {
 
         //texture
         TextureRegion textureRegion = atlas.findRegion("Ghost");
-        MyAnimationComponent anim = new MyAnimationComponent();
+//        MyAnimationComponent anim = new MyAnimationComponent();
         Animation animation;
         Array<TextureRegion> keyFrames = new Array<>();
 
@@ -402,17 +395,17 @@ public class MyWorldBuilder {
         animation = new Animation(0.2f, keyFrames, Animation.PlayMode.LOOP);
         animationActor.addAnimation(MyGhostComponent.DIE, animation);
 
-        MyGhostComponent ghostComponent = new MyGhostComponent(body);
-        Entity entity = new Entity();
-        entity.add(ghostComponent);
-        entity.add(new MyTransformComponent(x,y,3));
-        entity.add(new MyMovementComponent(body));
-        entity.add(new MyStateComponent());
-        entity.add(new MyTexureComponent(new TextureRegion(textureRegion,
-                0,0,16,16)));
+//        MyGhostComponent ghostComponent = new MyGhostComponent(body);
+//        Entity entity = new Entity();
+//        entity.add(ghostComponent);
+//        entity.add(new MyTransformComponent(x,y,3));
+//        entity.add(new MyMovementComponent(body));
+//        entity.add(new MyStateComponent());
+//        entity.add(new MyTexureComponent(new TextureRegion(textureRegion,
+//                0,0,16,16)));
 //        entity.add(anim);
 //        engine.addEntity(entity);
-        body.setUserData(entity);
+        body.setUserData(animationActor);
         animationActor.initAnimation(MyGhostComponent.MOVE_UP);
     }
     // make rectangle correct position and dimensions
@@ -421,5 +414,30 @@ public class MyWorldBuilder {
         rectangle.y = rectangle.y / MyGameManager.PPM;
         rectangle.width = rectangle.width / MyGameManager.PPM;
         rectangle.height = rectangle.height / MyGameManager.PPM;
+    }
+
+    private final Vector2 tmpV1 = new Vector2();
+
+    public void update(){
+        AnimationActor animationActor = (AnimationActor) playerBody.getUserData();
+        if (MyPlayerComponent.CURRENT_DIR!=MyPlayerComponent.IDLE) {
+            animationActor.setAniType(MyPlayerComponent.CURRENT_DIR);
+        }
+        if (MyPlayerComponent.CURRENT_DIR == MyPlayerComponent.MOVE_LEFT){
+            System.out.println("left");
+            playerBody.applyLinearImpulse(tmpV1.set(-3.6f, 0).scl(playerBody.getMass()), playerBody.getWorldCenter(), true);
+        }else if (MyPlayerComponent.CURRENT_DIR == MyPlayerComponent.MOVE_RIGHT){
+            System.out.println("right");
+            playerBody.applyLinearImpulse(tmpV1.set(3.6f, 0).scl(playerBody.getMass()), playerBody.getWorldCenter(), true);
+        }else if (MyPlayerComponent.CURRENT_DIR == MyPlayerComponent.MOVE_UP){
+            playerBody.applyLinearImpulse(tmpV1.set(0, 3.6f).scl(playerBody.getMass()), playerBody.getWorldCenter(), true);
+            System.out.println("down");
+        }else if (MyPlayerComponent.CURRENT_DIR == MyPlayerComponent.MOVE_DOWN){
+            playerBody.applyLinearImpulse(tmpV1.set(0, -3.6f).scl(playerBody.getMass()), playerBody.getWorldCenter(), true);
+            System.out.println("up");
+        }
+        if (playerBody.getLinearVelocity().len2() > 3.6F * 3.6F) {
+            playerBody.setLinearVelocity(playerBody.getLinearVelocity().scl(3.6F / playerBody.getLinearVelocity().len()));
+        }
     }
 }

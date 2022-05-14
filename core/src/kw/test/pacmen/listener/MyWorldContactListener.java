@@ -9,11 +9,15 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 
+import kw.test.pacmen.AnimationActor;
+import kw.test.pacmen.BodyImage;
+import kw.test.pacmen.GhostActor;
+import kw.test.pacmen.PlayerActor;
 import kw.test.pacmen.components.MyGhostComponent;
 import kw.test.pacmen.components.MyPillComponent;
 import kw.test.pacmen.components.MyPlayerComponent;
 import kw.test.pacmen.manger.MyGameManager;
-import kw.test.pacmen.system.MyGhostSystem;
+//import kw.test.pacmen.system.MyGhostSystem;
 
 public class MyWorldContactListener implements ContactListener {
     private final ComponentMapper<MyPillComponent> pillM = ComponentMapper.getFor(MyPillComponent.class);
@@ -28,37 +32,32 @@ public class MyWorldContactListener implements ContactListener {
     public void beginContact(Contact contact) {
         Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
-
-        if (fixtureA.getFilterData().categoryBits
-                == MyGameManager.getinstance().PILL_BIT ||
-        fixtureB.getFilterData().categoryBits
-                == MyGameManager.getinstance().PILL_BIT){
-            if (fixtureA.getFilterData().categoryBits
-                    == MyGameManager.getinstance().PLAYER_BIT){
+        //遇到了奖励
+        if (fixtureA.getFilterData().categoryBits == MyGameManager.getinstance().PILL_BIT ||
+                fixtureB.getFilterData().categoryBits == MyGameManager.getinstance().PILL_BIT){
+            if (fixtureA.getFilterData().categoryBits == MyGameManager.getinstance().PLAYER_BIT){
                 Body body = fixtureB.getBody();
-                Entity entity = (Entity) body.getUserData();
-                MyPillComponent pill = pillM.get(entity);
-                pill.eaten = true;
-                MyGameManager.getinstance().bigPillEaten = pill.big;
-            }else if (fixtureB.getFilterData().categoryBits
-                    == MyGameManager.PLAYER_BIT) {
+                BodyImage animationActor = (BodyImage) body.getUserData();
+                animationActor.setDie(true);
+                MyGameManager.getinstance().bigPillEaten = animationActor.isBig();
+            }else if (fixtureB.getFilterData().categoryBits == MyGameManager.PLAYER_BIT) {
                 Body body = fixtureA.getBody();
-                Entity entity = (Entity) body.getUserData();
-                MyPillComponent pill = pillM.get(entity);
-                pill.eaten = true;
-                MyGameManager.getinstance().bigPillEaten = pill.big;
+                BodyImage animationActor = (BodyImage) body.getUserData();
+                animationActor.setDie(true);
+                MyGameManager.getinstance().bigPillEaten = animationActor.isBig();
             }
         }else if (fixtureA.getFilterData().categoryBits == MyGameManager.GHOST_BIT ||
                 fixtureB.getFilterData().categoryBits == MyGameManager.GHOST_BIT) {
             // ghost
             if (fixtureA.getFilterData().categoryBits == MyGameManager.PLAYER_BIT) {
-                MyPlayerComponent player = playerM.get((Entity) fixtureA.getBody().getUserData());
-                MyGhostComponent ghost = ghostM.get((Entity) fixtureB.getBody().getUserData());
-
+//                MyPlayerComponent player = playerM.get((Entity) fixtureA.getBody().getUserData());
+//                MyGhostComponent ghost = ghostM.get((Entity) fixtureB.getBody().getUserData());
+                PlayerActor player = (PlayerActor) fixtureB.getBody().getUserData();
+                GhostActor ghost = (GhostActor) fixtureA.getBody().getUserData();
+//
                 if (ghost.currentState == MyGhostComponent.DIE) {
                     return;
                 }
-
                 if (ghost.warken) {
                     // kill ghost
                     ghost.hp--;
@@ -75,8 +74,10 @@ public class MyWorldContactListener implements ContactListener {
                 }
 
             } else if (fixtureB.getFilterData().categoryBits == MyGameManager.PLAYER_BIT) {
-                MyPlayerComponent player = playerM.get((Entity) fixtureB.getBody().getUserData());
-                MyGhostComponent ghost = ghostM.get((Entity) fixtureA.getBody().getUserData());
+                PlayerActor player = (PlayerActor) fixtureB.getBody().getUserData();
+                GhostActor ghost = (GhostActor) fixtureA.getBody().getUserData();
+//                MyPlayerComponent player = playerM.get((Entity) fixtureB.getBody().getUserData());
+//                MyGhostComponent ghost = ghostM.get((Entity) fixtureA.getBody().getUserData());
 
                 if (ghost.currentState == MyGhostComponent.DIE) {
                     return;

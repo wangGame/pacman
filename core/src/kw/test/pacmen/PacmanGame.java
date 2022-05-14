@@ -19,7 +19,6 @@ public class PacmanGame extends Game {
     public SpriteBatch batch;
     public Viewport worldView;
     public Viewport gameView;
-//    public Batch batch;
 
     @Override
     public void create() {

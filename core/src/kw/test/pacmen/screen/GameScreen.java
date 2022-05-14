@@ -17,6 +17,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -39,38 +40,13 @@ public class GameScreen extends ScreenAdapter {
     private TiledMapRenderer tiledMapRenderer;
     private Stage stage;
     private Group gameView;
+    private MyWorldBuilder myWorldBuilder;
 
     public GameScreen(PacmanGame pacmanGame) {
         this.pacmanGame = pacmanGame;
         this.stage = new Stage(pacmanGame.getGameView(),pacmanGame.batch);
     }
 
-    public void initKeyInput(){
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            MyPlayerComponent.CURRENT_DIR = MyPlayerComponent.MOVE_LEFT;
-        }else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            MyPlayerComponent.CURRENT_DIR = MyPlayerComponent.MOVE_LEFT;
-        }else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            MyPlayerComponent.CURRENT_DIR = MyPlayerComponent.MOVE_LEFT;
-        }else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            MyPlayerComponent.CURRENT_DIR = MyPlayerComponent.MOVE_LEFT;
-        }
-//        Gdx.input.setInputProcessor(new InputAdapter(){
-//            @Override
-//            public boolean keyDown(int keycode) {
-//                if (keycode == Input.Keys.LEFT) {
-//
-//                }else if (keycode == Input.Keys.RIGHT){
-//
-//                }else if (keycode == Input.Keys.DOWN){
-//
-//                }else if (keycode == Input.Keys.UP){
-//
-//                }
-//                return super.keyDown(keycode);
-//            }
-//        });
-    }
 
     @Override
     public void show() {
@@ -84,7 +60,11 @@ public class GameScreen extends ScreenAdapter {
         stage.addActor(gameView);
         gameView.setPosition(Constant.GAMEWIDTH/2,Constant.GAMEHEIGHT/2, Align.center);
         gameView.setDebug(true);
-        new MyWorldBuilder(tiledMap,null,world,null,gameView).buildMap();
+
+        myWorldBuilder = new MyWorldBuilder(tiledMap, world, null, gameView);
+        myWorldBuilder.buildMap();
+//        Body playerBody = myWorldBuilder.getPlayerBody();
+
     }
 
     @Override
@@ -96,6 +76,8 @@ public class GameScreen extends ScreenAdapter {
         debugRenderer .render(world, pacmanGame.getWorldView().getCamera().combined);
         tiledMapRenderer.setView((OrthographicCamera) pacmanGame.getWorldView().getCamera());
         tiledMapRenderer.render();
+        initKeyInput();
+        myWorldBuilder.update();
         stage.act();
         stage.draw();
     }
@@ -103,5 +85,23 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void resize(int width, int height) {
         super.resize(width, height);
+    }
+
+
+    public void initKeyInput(){
+        MyPlayerComponent.CURRENT_DIR = MyPlayerComponent.IDLE;
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            MyPlayerComponent.CURRENT_DIR = MyPlayerComponent.MOVE_LEFT;
+            System.out.println("left");
+        }else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            MyPlayerComponent.CURRENT_DIR = MyPlayerComponent.MOVE_RIGHT;
+            System.out.println("right");
+        }else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            MyPlayerComponent.CURRENT_DIR = MyPlayerComponent.MOVE_DOWN;
+            System.out.println("down");
+        }else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            MyPlayerComponent.CURRENT_DIR = MyPlayerComponent.MOVE_UP;
+            System.out.println("up");
+        }
     }
 }

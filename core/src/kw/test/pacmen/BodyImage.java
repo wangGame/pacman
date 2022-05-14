@@ -2,6 +2,7 @@ package kw.test.pacmen;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Align;
 
@@ -10,6 +11,27 @@ import kw.test.pacmen.manger.MyGameManager;
 
 public class BodyImage extends Image {
     private Body body;
+    private boolean die;
+    private boolean isBig;
+
+    public void setDie(boolean die) {
+        this.die = die;
+        if (die){
+            remove();
+        }
+    }
+
+    public void setBig(boolean big) {
+        isBig = big;
+    }
+
+    public boolean isBig() {
+        return isBig;
+    }
+
+    public boolean isDie() {
+        return die;
+    }
 
     public BodyImage(TextureRegion textureRegion) {
         super(textureRegion);
@@ -24,5 +46,6 @@ public class BodyImage extends Image {
 
     public void setBody(Body body) {
         this.body = body;
+        body.setUserData(this);
     }
 }
