@@ -23,12 +23,6 @@ public class GhostActorAi {
     }
 
     public void update(){
-        if (ghostActor.nextNode == null || ghostActor.timer > 0.2f) {
-            ghostActor.nextNode = MyGameManager.getinstance().pathfinder.findNextNode(ghostActor.getPosition(), MyGameManager.getinstance().ghostSpawnPos);
-            ghostActor.timer = 0;
-            System.out.println(ghostActor.nextNode+"----------------------");
-        }
-
         if (ghostActor.currentState == MyGhostComponent.MOVE_UP){
             moveUp();
         }else if (ghostActor.currentState == MyGhostComponent.MOVE_DOWN){
@@ -244,13 +238,13 @@ public class GhostActorAi {
         }
 
         if (x > 0) {
-            ghostActor.currentState = MyGhostComponent.MOVE_LEFT;
-        } else if (x < 0) {
             ghostActor.currentState = MyGhostComponent.MOVE_RIGHT;
+        } else if (x < 0) {
+            ghostActor.currentState = MyGhostComponent.MOVE_LEFT;
         } else if (y > 0) {
-            ghostActor.currentState = MyGhostComponent.MOVE_DOWN;
-        } else if (y < 0) {
             ghostActor.currentState = MyGhostComponent.MOVE_UP;
+        } else if (y < 0) {
+            ghostActor.currentState = MyGhostComponent.MOVE_DOWN;
         }
 
         if (body.getLinearVelocity().len2() > ghostActor.speed * ghostActor.speed) {

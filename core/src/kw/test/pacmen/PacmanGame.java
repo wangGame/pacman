@@ -22,7 +22,6 @@ public class PacmanGame extends Game {
 
     @Override
     public void create() {
-        batch = new SpriteBatch();
         batch = new CpuSpriteBatch();
         worldView = new FitViewport(Constant.WORLDWIDTH,Constant.WORLDHEIGHT);
         gameView = new FitViewport(Constant.GAMEWIDTH,Constant.GAMEHEIGHT);
