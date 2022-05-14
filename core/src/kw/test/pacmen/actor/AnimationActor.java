@@ -1,4 +1,4 @@
-package kw.test.pacmen;
+package kw.test.pacmen.actor;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -28,6 +28,10 @@ public class AnimationActor extends Actor {
 
     public void setBody(Body body) {
         this.body = body;
+    }
+
+    public Body getBody() {
+        return body;
     }
 
     public void addAnimation(int name, Animation animation){

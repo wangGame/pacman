@@ -1,4 +1,4 @@
-package kw.test.pacmen;
+package kw.test.pacmen.actor;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;

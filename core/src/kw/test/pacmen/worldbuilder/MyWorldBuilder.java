@@ -25,10 +25,10 @@ import com.badlogic.gdx.utils.Array;
 
 
 import box2dLight.RayHandler;
-import kw.test.pacmen.AnimationActor;
-import kw.test.pacmen.BodyImage;
-import kw.test.pacmen.GhostActor;
-import kw.test.pacmen.PlayerActor;
+import kw.test.pacmen.actor.AnimationActor;
+import kw.test.pacmen.actor.BodyImage;
+import kw.test.pacmen.actor.GhostActor;
+import kw.test.pacmen.actor.PlayerActor;
 import kw.test.pacmen.ai.astar.MyAStarMap;
 import kw.test.pacmen.ai.astar.MyAstartPathFinding;
 import kw.test.pacmen.components.MyGhostComponent;
@@ -208,55 +208,25 @@ public class MyWorldBuilder {
         playerBody.createFixture(fixtureDef);
         playerBody.setUserData(animationActor);
         circleShape.dispose();
-
-        // box2d light
-//        PointLight pointLight = new PointLight(rayHandler, 50, new Color(0.5f, 0.5f, 0.5f, 1.0f), 12f, 0, 0);
-//        pointLight.setContactFilter(MyGameManager.LIGHT_BIT, MyGameManager.NOTHING_BIT, MyGameManager.WALL_BIT);
-//        pointLight.setSoft(true);
-//        pointLight.setSoftnessLength(2.0f);
-//        pointLight.attachToBody(body);
-
-        TextureRegion textureRegion = new TextureRegion(atlas.findRegion("Pacman"), 0, 0, 16, 16);
-
-        MyPlayerComponent player = new MyPlayerComponent(playerBody);
-        MyGameManager.getinstance().playerLocation = player.ai;
-
-//        Entity entity = new Entity();
-//        entity.add(player);
-//        entity.add(new MyTransformComponent(x, y, 1));
-//        entity.add(new MyMovementComponent(body));
-//        entity.add(new MyStateComponent(MyPlayerComponent.IDLE_RIGHT));
-//        entity.add(new MyTexureComponent(textureRegion));
-
-//        MyAnimationComponent animationComponent = new MyAnimationComponent();
         Animation animation;
         Array<TextureRegion> keyFrames = new Array<>();
-
         // idle
         keyFrames.add(new TextureRegion(atlas.findRegion("Pacman"), 16 * 1, 0, 16, 16));
         animation = new Animation(0.2f, keyFrames);
         animationActor.addAnimation(MyPlayerComponent.IDLE_RIGHT, animation);
-
         keyFrames.clear();
-
         keyFrames.add(new TextureRegion(atlas.findRegion("Pacman"), 16 * 3, 0, 16, 16));
         animation = new Animation(0.2f, keyFrames);
         animationActor.addAnimation(MyPlayerComponent.IDLE_LEFT, animation);
-
         keyFrames.clear();
-
         keyFrames.add(new TextureRegion(atlas.findRegion("Pacman"), 16 * 5, 0, 16, 16));
         animation = new Animation(0.2f, keyFrames);
         animationActor.addAnimation(MyPlayerComponent.IDLE_UP, animation);
-
         keyFrames.clear();
-
         keyFrames.add(new TextureRegion(atlas.findRegion("Pacman"), 16 * 7, 0, 16, 16));
         animation = new Animation(0.2f, keyFrames);
         animationActor.addAnimation(MyPlayerComponent.IDLE_DOWN, animation);
-
         keyFrames.clear();
-
         // move
         for (int i = 1; i < 3; i++) {
             keyFrames.add(new TextureRegion(atlas.findRegion("Pacman"), i * 16, 0, 16, 16));
@@ -299,11 +269,6 @@ public class MyWorldBuilder {
 
         keyFrames.clear();
         animationActor.setAniType(MyPlayerComponent.MOVE_LEFT);
-
-//        entity.add(animationComponent);
-
-//        engine.addEntity(entity);
-//        body.setUserData(entity);
     }
     private void createGhost(float x,float y,int index){
         GhostActor animationActor = new GhostActor();
@@ -327,13 +292,6 @@ public class MyWorldBuilder {
         fixtureDef.filter.maskBits = MyGameManager.WALL_BIT | MyGameManager.GATE_BIT;
         fixtureDef.isSensor = false;
         body.createFixture(fixtureDef);
-
-        // box2d light
-//        PointLight pointLight = new PointLight(rayHandler, 50, new Color(0.2f, 0.2f, 0.2f, 1.0f), 12f, 0, 0);
-//        pointLight.setContactFilter(MyGameManager.LIGHT_BIT, MyGameManager.NOTHING_BIT, MyGameManager.WALL_BIT);
-//        pointLight.setSoft(true);
-//        pointLight.setSoftnessLength(5.0f);
-//        pointLight.attachToBody(body);
         circleShape.dispose();
 
         //texture
@@ -348,7 +306,7 @@ public class MyWorldBuilder {
                     i*16,index*16,16,16));
         }
         animation = new Animation(0.2F,keyFrames,Animation.PlayMode.LOOP);
-        animationActor.addAnimation(MyGhostComponent.MOVE_RIGHT,animation);
+        animationActor.addAnimation(MyGhostComponent.MOVE_LEFT,animation);
 
         keyFrames.clear();
 

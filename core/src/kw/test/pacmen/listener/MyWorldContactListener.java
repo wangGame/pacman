@@ -9,10 +9,9 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 
-import kw.test.pacmen.AnimationActor;
-import kw.test.pacmen.BodyImage;
-import kw.test.pacmen.GhostActor;
-import kw.test.pacmen.PlayerActor;
+import kw.test.pacmen.actor.BodyImage;
+import kw.test.pacmen.actor.GhostActor;
+import kw.test.pacmen.actor.PlayerActor;
 import kw.test.pacmen.components.MyGhostComponent;
 import kw.test.pacmen.components.MyPillComponent;
 import kw.test.pacmen.components.MyPlayerComponent;
@@ -20,9 +19,6 @@ import kw.test.pacmen.manger.MyGameManager;
 //import kw.test.pacmen.system.MyGhostSystem;
 
 public class MyWorldContactListener implements ContactListener {
-    private final ComponentMapper<MyPillComponent> pillM = ComponentMapper.getFor(MyPillComponent.class);
-    private final ComponentMapper<MyGhostComponent> ghostM = ComponentMapper.getFor(MyGhostComponent.class);
-    private final ComponentMapper<MyPlayerComponent> playerM = ComponentMapper.getFor(MyPlayerComponent.class);
 
     public MyWorldContactListener(){
 
@@ -50,8 +46,6 @@ public class MyWorldContactListener implements ContactListener {
                 fixtureB.getFilterData().categoryBits == MyGameManager.GHOST_BIT) {
             // ghost
             if (fixtureA.getFilterData().categoryBits == MyGameManager.PLAYER_BIT) {
-//                MyPlayerComponent player = playerM.get((Entity) fixtureA.getBody().getUserData());
-//                MyGhostComponent ghost = ghostM.get((Entity) fixtureB.getBody().getUserData());
                 PlayerActor player = (PlayerActor) fixtureB.getBody().getUserData();
                 GhostActor ghost = (GhostActor) fixtureA.getBody().getUserData();
 //
@@ -62,8 +56,7 @@ public class MyWorldContactListener implements ContactListener {
                     // kill ghost
                     ghost.hp--;
                     MyGameManager.getinstance().addScore(800);
-//                    MyGameManager.getinstance().assetManager.get("sounds/ghost_die.ogg", Sound.class).play();
-                } else // kill player if player is not invincible
+               } else // kill player if player is not invincible
                 {
                     if (!MyGameManager.getinstance().playerIsInvincible) {
                         player.hp--;
@@ -76,24 +69,16 @@ public class MyWorldContactListener implements ContactListener {
             } else if (fixtureB.getFilterData().categoryBits == MyGameManager.PLAYER_BIT) {
                 PlayerActor player = (PlayerActor) fixtureB.getBody().getUserData();
                 GhostActor ghost = (GhostActor) fixtureA.getBody().getUserData();
-//                MyPlayerComponent player = playerM.get((Entity) fixtureB.getBody().getUserData());
-//                MyGhostComponent ghost = ghostM.get((Entity) fixtureA.getBody().getUserData());
-
                 if (ghost.currentState == MyGhostComponent.DIE) {
                     return;
                 }
-
                 if (ghost.warken) {
                     // kill ghost
                     ghost.hp--;
                     MyGameManager.getinstance().addScore(800);
-//                    MyGameManager.getinstance().assetManager.get("sounds/ghost_die.ogg", Sound.class).play();
                 } else // kill player if player is not invincible
                     if (!MyGameManager.getinstance().playerIsInvincible) {
                         player.hp--;
-//                        if (GameManager.instance.playerIsAlive) {
-//                            GameManager.instance.assetManager.get("sounds/pacman_die.ogg", Sound.class).play();
-//                        }
                     }
             }
         }

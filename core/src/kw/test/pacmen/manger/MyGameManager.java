@@ -7,10 +7,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 
 import kw.test.pacmen.ai.astar.MyAstartPathFinding;
+import kw.test.pacmen.utils.Box2dLocation;
 
 public class MyGameManager implements Disposable {
 //    short
-
     public static final float PPM = 16f;
     public static final short NOTHING_BIT = 0;
     public static final short WALL_BIT = 1;
@@ -19,41 +19,26 @@ public class MyGameManager implements Disposable {
     public static final short GHOST_BIT = 1 << 3;
     public static final short GATE_BIT = 1 << 4;
     public static final short LIGHT_BIT = 1 << 5;
-
-    public static int currentdir = 0;
-
-
+    public Vector2 playerLocation;
+    private int highScore = 0;
+    private int score;
     private static MyGameManager instance;
-
     //是否活着F
-    public boolean playerIsAlive;
-    //有几条命
-    public int playerLives;
+    public boolean playerIsAlive = true;
     //初始位置
     public Vector2 playerSpawnPos;
     //无敌
     public boolean playerIsInvincible;
     public boolean bigPillEaten;
-    public Location<Vector2> playerLocation;
     public MyAstartPathFinding pathfinder;
     public Vector2 ghostSpawnPos;
-
     public int totalPills = 3;
-    //游戏结束
-    private boolean gameOver = false;
     public AssetManager assetManager;
 
     public MyGameManager(){
         assetManager = new AssetManager();
         assetManager.load("images/actors.pack", TextureAtlas.class);
-//        assetManager.load("sounds/pill.ogg", Sound.class);
-//        assetManager.load("sounds/big_pill.ogg", Sound.class);
-//        assetManager.load("sounds/ghost_die.ogg", Sound.class);
-//        assetManager.load("sounds/pacman_die.ogg", Sound.class);
-//        assetManager.load("sounds/clear.ogg", Sound.class);
-
         assetManager.finishLoading();
-
         playerSpawnPos = new Vector2();
         ghostSpawnPos = new Vector2();
     }
@@ -65,15 +50,6 @@ public class MyGameManager implements Disposable {
         return instance;
     }
 
-    public void decreasePlayerLives() {
-        playerLives--;
-    }
-    public void makeGameOver() {
-        gameOver = true;
-    }
-
-    private int highScore = 0;
-    private int score;
     public void addScore(int score) {
         this.score += score;
         if (this.score > highScore) {
@@ -83,6 +59,5 @@ public class MyGameManager implements Disposable {
 
     @Override
     public void dispose() {
-//        assetManager.dispose();
     }
 }
