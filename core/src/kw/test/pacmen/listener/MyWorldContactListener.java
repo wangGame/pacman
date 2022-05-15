@@ -60,6 +60,7 @@ public class MyWorldContactListener implements ContactListener {
                 {
                     if (!MyGameManager.getinstance().playerIsInvincible) {
                         player.hp--;
+                        MyGameManager.getinstance().playerIsInvincible = true;
                         if (MyGameManager.getinstance().playerIsAlive) {
 //                            GameManager.instance.assetManager.get("sounds/pacman_die.ogg", Sound.class).play();
                         }

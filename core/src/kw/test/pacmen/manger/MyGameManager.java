@@ -19,6 +19,7 @@ public class MyGameManager implements Disposable {
     public static final short GHOST_BIT = 1 << 3;
     public static final short GATE_BIT = 1 << 4;
     public static final short LIGHT_BIT = 1 << 5;
+
     public Vector2 playerLocation;
     private int highScore = 0;
     private int score;

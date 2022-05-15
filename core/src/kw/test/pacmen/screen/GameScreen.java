@@ -27,6 +27,7 @@ import kw.test.pacmen.PacmanGame;
 import kw.test.pacmen.components.MyPlayerComponent;
 import kw.test.pacmen.constant.Constant;
 import kw.test.pacmen.listener.MyWorldContactListener;
+import kw.test.pacmen.manger.MyGameManager;
 import kw.test.pacmen.worldbuilder.MyWorldBuilder;
 
 /**
@@ -80,6 +81,9 @@ public class GameScreen extends ScreenAdapter {
         myWorldBuilder.update();
         stage.act();
         stage.draw();
+        System.out.println("---------------------------------------" +
+                "");
+        MyGameManager.getinstance().bigPillEaten = false;
     }
 
     @Override

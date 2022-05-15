@@ -11,16 +11,18 @@ import java.util.HashMap;
 import kw.test.pacmen.manger.MyGameManager;
 
 public class AnimationActor extends Actor {
+    //动画
     private Animation animation;
+    //所有的动画，名称和动画匹配
     private HashMap<Integer,Animation> animationHashMap = new HashMap<>();
-    private float time;
+    //动画进行的时间
+    private float animationTime;
+    //当前需要绘制的动画
     private TextureRegion region;
+    //刚体
     private Body body;
+    //是不是死亡
     private boolean die;
-
-    public AnimationActor(){
-
-    }
 
     public void setDie(boolean die) {
         this.die = die;
@@ -45,19 +47,19 @@ public class AnimationActor extends Actor {
 
     public void setAniType(int type){
         animation = animationHashMap.get(type);
+        animationTime = 0;
     }
 
     @Override
     public void act(float delta) {
         super.act(delta);
         if (animation!=null){
-            region = animation.getKeyFrame(time);
+            region = animation.getKeyFrame(animationTime);
         }
-        time += delta;
+        animationTime += delta;
         if (body!=null) {
             setPosition(body.getPosition().x* MyGameManager.PPM,body.getPosition().y*MyGameManager.PPM);
         }
-
         if (die){
             remove();
         }

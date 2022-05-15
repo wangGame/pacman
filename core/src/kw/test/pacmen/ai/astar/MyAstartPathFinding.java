@@ -49,7 +49,7 @@ public class MyAstartPathFinding {
         connectionPath.clear();
         pathFinder.searchConnectionPath(sourceNode, targetNode, heuristic, connectionPath);
         return connectionPath.getCount() == 0?null : connectionPath.get(0).getToNode();
-
+//        return null;
     }
 
     public static MyGrap createGraph(MyAStarMap myAStarMap){
