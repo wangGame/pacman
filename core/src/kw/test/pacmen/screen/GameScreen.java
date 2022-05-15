@@ -16,6 +16,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -23,6 +24,8 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Align;
+
+import box2dLight.RayHandler;
 import kw.test.pacmen.PacmanGame;
 import kw.test.pacmen.components.MyGhostComponent;
 import kw.test.pacmen.components.MyPlayerComponent;
@@ -43,6 +46,8 @@ public class GameScreen extends ScreenAdapter {
     private Stage stage;
     private Group gameView;
     private MyWorldBuilder myWorldBuilder;
+    private RayHandler rayHandler;
+    private float ambientLight = 0.5f;
 
     public GameScreen(PacmanGame pacmanGame) {
         this.pacmanGame = pacmanGame;
@@ -63,10 +68,13 @@ public class GameScreen extends ScreenAdapter {
         gameView.setPosition(Constant.GAMEWIDTH/2,Constant.GAMEHEIGHT/2, Align.center);
         gameView.setDebug(true);
 
-        myWorldBuilder = new MyWorldBuilder(tiledMap, world, null, gameView);
+        rayHandler = new RayHandler(world);
+        rayHandler.setAmbientLight(0.5F);
+        myWorldBuilder = new MyWorldBuilder(tiledMap, world, rayHandler, gameView);
         myWorldBuilder.buildMap();
-//        Body playerBody = myWorldBuilder.getPlayerBody();
 
+//        rayHandler.setAmbientLight(MathUtils.clamp(0.6F, 0f, 1f));
+//        rayHandler.removeAll();
     }
 
     @Override
@@ -82,12 +90,13 @@ public class GameScreen extends ScreenAdapter {
         tiledMapRenderer.setView((OrthographicCamera) pacmanGame.getWorldView().getCamera());
         tiledMapRenderer.render();
         initKeyInput();
+
         stage.act();
         stage.draw();
-        if (MyGameManager.getinstance().bigPillEaten) {
-            System.out.println("---------------------------------------" + MyGameManager.getinstance().bigPillEaten);
-            MyGameManager.getinstance().bigPillEaten = false;
-        }
+//        ambientLight -= delta;
+
+        rayHandler.setCombinedMatrix(((OrthographicCamera) pacmanGame.getWorldView().getCamera()));
+        rayHandler.updateAndRender();
     }
 
     @Override

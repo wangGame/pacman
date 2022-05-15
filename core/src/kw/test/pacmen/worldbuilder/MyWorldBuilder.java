@@ -1,6 +1,7 @@
 package kw.test.pacmen.worldbuilder;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -24,6 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
 
 
+import box2dLight.PointLight;
 import box2dLight.RayHandler;
 import kw.test.pacmen.actor.AnimationActor;
 import kw.test.pacmen.actor.BodyImage;
@@ -42,11 +44,12 @@ public class MyWorldBuilder {
     private final TextureAtlas atlas;
     private boolean wall;
     private Group gameView;
-
+    private RayHandler rayHandler;
     public MyWorldBuilder(TiledMap tiledMap, World world, RayHandler rayHandler, Group gameView){
         this.gameView = gameView;
         this.tiledMap = tiledMap;
         this.world = world;
+        this.rayHandler = rayHandler;
         assetManager = MyGameManager.getinstance().assetManager;
         atlas = assetManager.get("images/actors.pack",TextureAtlas.class);
     }
@@ -269,6 +272,13 @@ public class MyWorldBuilder {
 
         keyFrames.clear();
         animationActor.setAniType(MyPlayerComponent.MOVE_LEFT);
+
+
+        PointLight pointLight = new PointLight(rayHandler, 50, new Color(0.5f, 0.5f, 0.5f, 1.0f), 12f, 0, 0);
+        pointLight.setContactFilter(MyGameManager.LIGHT_BIT, MyGameManager.NOTHING_BIT, MyGameManager.WALL_BIT);
+        pointLight.setSoft(true);
+        pointLight.setSoftnessLength(2.0f);
+        pointLight.attachToBody(playerBody);
     }
     private void createGhost(float x,float y,int index){
         GhostActor animationActor = new GhostActor();
@@ -365,6 +375,12 @@ public class MyWorldBuilder {
 //        engine.addEntity(entity);
         body.setUserData(animationActor);
         animationActor.initAnimation(MyGhostComponent.MOVE_UP);
+
+        PointLight pointLight = new PointLight(rayHandler, 50, new Color(0.5f, 0.5f, 0.5f, 1.0f), 12f, 0, 0);
+        pointLight.setContactFilter(MyGameManager.LIGHT_BIT, MyGameManager.NOTHING_BIT, MyGameManager.WALL_BIT);
+        pointLight.setSoft(true);
+        pointLight.setSoftnessLength(2.0f);
+        pointLight.attachToBody(body);
     }
     // make rectangle correct position and dimensions
     private void correctRectangle(Rectangle rectangle) {

@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import box2dLight.RayHandler;
 import kw.test.pacmen.constant.Constant;
 import kw.test.pacmen.manger.MyGameManager;
 import kw.test.pacmen.screen.GameScreen;
