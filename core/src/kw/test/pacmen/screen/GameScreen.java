@@ -24,6 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Align;
 import kw.test.pacmen.PacmanGame;
+import kw.test.pacmen.components.MyGhostComponent;
 import kw.test.pacmen.components.MyPlayerComponent;
 import kw.test.pacmen.constant.Constant;
 import kw.test.pacmen.listener.MyWorldContactListener;
@@ -73,17 +74,20 @@ public class GameScreen extends ScreenAdapter {
         super.render(delta);
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        myWorldBuilder.update();
+
             world.step(1/60F,8,3);
         debugRenderer .render(world, pacmanGame.getWorldView().getCamera().combined);
         tiledMapRenderer.setView((OrthographicCamera) pacmanGame.getWorldView().getCamera());
         tiledMapRenderer.render();
         initKeyInput();
-        myWorldBuilder.update();
         stage.act();
         stage.draw();
-        System.out.println("---------------------------------------" +
-                "");
-        MyGameManager.getinstance().bigPillEaten = false;
+        if (MyGameManager.getinstance().bigPillEaten) {
+            System.out.println("---------------------------------------" + MyGameManager.getinstance().bigPillEaten);
+            MyGameManager.getinstance().bigPillEaten = false;
+        }
     }
 
     @Override
@@ -96,16 +100,16 @@ public class GameScreen extends ScreenAdapter {
         MyPlayerComponent.CURRENT_DIR = MyPlayerComponent.IDLE;
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             MyPlayerComponent.CURRENT_DIR = MyPlayerComponent.MOVE_LEFT;
-            System.out.println("left");
+//            System.out.println("left");
         }else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             MyPlayerComponent.CURRENT_DIR = MyPlayerComponent.MOVE_RIGHT;
-            System.out.println("right");
+//            System.out.println("right");
         }else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             MyPlayerComponent.CURRENT_DIR = MyPlayerComponent.MOVE_DOWN;
-            System.out.println("down");
+//            System.out.println("down");
         }else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             MyPlayerComponent.CURRENT_DIR = MyPlayerComponent.MOVE_UP;
-            System.out.println("up");
+//            System.out.println("up");
         }
     }
 }

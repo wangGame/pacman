@@ -10,7 +10,7 @@ public class GhostActor extends AnimationActor{
 
     public int currentState = MyGhostComponent.MOVE_UP;
     public boolean warken;
-    public int hp;
+    public int hp = 100;
     public float speed = 2.4F;
     public float timer = 0;
 //    public boolean weaken;
@@ -27,25 +27,23 @@ public class GhostActor extends AnimationActor{
     public void act(float delta) {
         super.act(delta);
         timer += delta;
-        System.out.println("---------------"+timer);
         if (MyGameManager.getinstance().bigPillEaten){
             warken = true;
+            weakenTime = 0;
+            System.out.println(warken);
         }
-
         if (warken) {
             weakenTime += delta;
-            if (weakenTime > 1) {
+            if (weakenTime > 3F) {
                 warken = false;
-
             }
         }
-
         ai.update();
     }
 
     public void respawn() {
         hp = 1;
-        warken = false;
+//        warken = false;
     }
 
     public Vector2 getPosition() {

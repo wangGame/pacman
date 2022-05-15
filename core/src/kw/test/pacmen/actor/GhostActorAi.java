@@ -30,6 +30,7 @@ public class GhostActorAi {
     }
 
     private void run() {
+        System.out.println(ghostActor.currentState);
         if (ghostActor.currentState == MyGhostComponent.MOVE_UP){
             moveUp();
         }else if (ghostActor.currentState == MyGhostComponent.MOVE_DOWN){
@@ -50,35 +51,39 @@ public class GhostActorAi {
     }
 
     private void updateState() {
-        switch (this.status) {
-            case MyGhostComponent.MOVE_UP: // UP
-//                ghostActor.changeState(MOVE_UP);
-                ghostActor.currentState = MyGhostComponent.MOVE_UP;
-                break;
-            case MyGhostComponent.MOVE_DOWN: // DOWN
-                ghostActor.currentState = MyGhostComponent.MOVE_DOWN;
-                break;
-            case MyGhostComponent.MOVE_LEFT: // LEFT
-                ghostActor.currentState = MyGhostComponent.MOVE_LEFT;
-                break;
-            case MyGhostComponent.MOVE_RIGHT: // RIGHT
-                ghostActor.currentState = MyGhostComponent.MOVE_RIGHT;
-                break;
-            case MyGhostComponent.ESCAPE: // ESCAPE
-                ghostActor.currentState = MyGhostComponent.ESCAPE;
-                break;
-            case MyGhostComponent.DIE: // DIE
-                ghostActor.currentState = MyGhostComponent.DIE;
-                break;
-            default:
-                break;
-        }
+        ghostActor.currentState = status;
+//        switch (this.status) {
+//            case MyGhostComponent.MOVE_UP: // UP
+////                ghostActor.changeState(MOVE_UP);
+//                ghostActor.currentState = MyGhostComponent.MOVE_UP;
+//                break;
+//            case MyGhostComponent.MOVE_DOWN: // DOWN
+//                ghostActor.currentState = MyGhostComponent.MOVE_DOWN;
+//                break;
+//            case MyGhostComponent.MOVE_LEFT: // LEFT
+//                ghostActor.currentState = MyGhostComponent.MOVE_LEFT;
+//                break;
+//            case MyGhostComponent.MOVE_RIGHT: // RIGHT
+//                ghostActor.currentState = MyGhostComponent.MOVE_RIGHT;
+//                break;
+//            case MyGhostComponent.ESCAPE: // ESCAPE
+//                ghostActor.currentState = MyGhostComponent.ESCAPE;
+//                break;
+//            case MyGhostComponent.PURSUE:
+//                ghostActor.currentState = MyGhostComponent.PURSUE;
+//            case MyGhostComponent.DIE: // DIE
+//                ghostActor.currentState = MyGhostComponent.DIE;
+//                break;
+//            default:
+//                break;
+//        }
     }
 
     private void statusChange() {
         //速度先变为0
-        ghostActor.getBody().setLinearVelocity(0,0);
         if (oldStatus != ghostActor.currentState) {
+
+        ghostActor.getBody().setLinearVelocity(0,0);
             oldStatus = ghostActor.currentState;
             ghostActor.nextNode = null;
             if (!inPosition(ghostActor, 0.1f)) {
@@ -100,18 +105,20 @@ public class GhostActorAi {
             return;
         }
         if (ghostActor.timer > 0.5f && inPosition(ghostActor, 0.05f)) {
-
+            ghostActor.timer = 0;
             int newState = getRandomDirectionChoice(getDirectionChoices(ghostActor, MyGhostComponent.MOVE_DOWN));
             if (newState != ghostActor.currentState) {
                 changeState(ghostActor, newState);
                 return;
             }
         }
+//        test();
 
         if (ghostActor.warken) {
-            ghostActor.currentState = MyGhostComponent.ESCAPE;
+            status = MyGhostComponent.ESCAPE;
             if (ghostActor.hp <= 0 && inPosition(ghostActor, 0.1f)) {
                 ghostActor.currentState = MyGhostComponent.DIE;
+                status = MyGhostComponent.DIE;
                 return;
             }
         }
@@ -120,7 +127,6 @@ public class GhostActorAi {
                 (MyGameManager.getinstance().playerIsAlive && !MyGameManager.getinstance().playerIsInvincible)
                 && inPosition(ghostActor, 0.1f)) {
             if (ghostActor.warken) {
-
                 status = MyGhostComponent.ESCAPE;
             } else {
                 status = MyGhostComponent.PURSUE;
@@ -152,21 +158,7 @@ public class GhostActorAi {
             }
         }
 
-        if (ghostActor.warken) {
-            ghostActor.currentState = MyGhostComponent.ESCAPE;
-            if (ghostActor.hp <= 0 && inPosition(ghostActor, 0.1f)) {
-                ghostActor.currentState = MyGhostComponent.DIE;
-                return;
-            }
-        }
-
-        if (nearPlayer(ghostActor, PURSUE_RADIUS) && (MyGameManager.getinstance().playerIsAlive && !MyGameManager.getinstance().playerIsInvincible) && inPosition(ghostActor, 0.1f)) {
-            if (ghostActor.warken) {
-                ghostActor.currentState = MyGhostComponent.ESCAPE;
-            } else {
-                ghostActor.currentState = MyGhostComponent.PURSUE;
-            }
-        }
+        test();
     }
 
     public void moveLeft() {
@@ -184,7 +176,7 @@ public class GhostActorAi {
             return;
         }
 
-        if (ghostActor.timer > 5f && inPosition(ghostActor, 0.05f)) {
+        if (ghostActor.timer > 0.5f && inPosition(ghostActor, 0.05f)) {
             int newState = getRandomDirectionChoice(getDirectionChoices(ghostActor, MyGhostComponent.MOVE_RIGHT));
             ghostActor.timer = 0;
             if (newState != ghostActor.currentState) {
@@ -193,22 +185,7 @@ public class GhostActorAi {
             }
         }
 
-        if (ghostActor.warken) {
-            ghostActor.currentState = MyGhostComponent.ESCAPE;
-
-            if (ghostActor.hp <= 0 && inPosition(ghostActor, 0.1f)) {
-                ghostActor.currentState = MyGhostComponent.DIE;
-                return;
-            }
-        }
-
-        if (nearPlayer(ghostActor, PURSUE_RADIUS) && (MyGameManager.getinstance().playerIsAlive && !MyGameManager.getinstance().playerIsInvincible) && inPosition(ghostActor, 0.1f)) {
-            if (ghostActor.warken) {
-                ghostActor.currentState = MyGhostComponent.ESCAPE;
-            } else {
-                ghostActor.currentState = MyGhostComponent.PURSUE;
-            }
-        }
+        test();
     }
 
     public void moveRight() {
@@ -235,20 +212,26 @@ public class GhostActorAi {
             }
         }
 
-        if (ghostActor.warken) {
-            ghostActor.currentState = MyGhostComponent.ESCAPE;
+        test();
+    }
 
-            if (ghostActor.hp <= 0 && inPosition(ghostActor, 0.1f)) {
-                ghostActor.currentState = MyGhostComponent.DIE;
-                return;
-            }
+    private void test() {
+        if (ghostActor.warken) {
+            status = MyGhostComponent.ESCAPE;
+//            if (ghostActor.hp <= 0 && inPosition(ghostActor, 0.1f)) {
+//                status = MyGhostComponent.DIE;
+//                return;
+//            }
         }
 
-        if (nearPlayer(ghostActor, PURSUE_RADIUS) && (MyGameManager.getinstance().playerIsAlive && !MyGameManager.getinstance().playerIsInvincible) && inPosition(ghostActor, 0.1f)) {
+        if (nearPlayer(ghostActor, PURSUE_RADIUS) &&
+                (MyGameManager.getinstance().playerIsAlive &&
+                        !MyGameManager.getinstance().playerIsInvincible) &&
+                inPosition(ghostActor, 0.1f)) {
             if (ghostActor.warken) {
-                ghostActor.currentState = MyGhostComponent.ESCAPE;
+                status = MyGhostComponent.ESCAPE;
             } else {
-                ghostActor.currentState = MyGhostComponent.PURSUE;
+                status = MyGhostComponent.PURSUE;
             }
         }
     }
@@ -263,7 +246,6 @@ public class GhostActorAi {
         // do path finding every 0.1 second
         if (ghostActor.nextNode == null || ghostActor.timer > 0.1f) {
             ghostActor.nextNode = MyGameManager.getinstance().pathfinder.findNextNode(ghostActor.getPosition(), MyGameManager.getinstance().playerLocation);
-            System.out.println(ghostActor.nextNode+"----------------------");
             ghostActor.timer = 0;
         }
         if (ghostActor.nextNode == null) {
@@ -301,17 +283,18 @@ public class GhostActorAi {
         }
 
         if (ghostActor.warken) {
-            status = MyGhostComponent.ESCAPE;
+            ghostActor.currentState = MyGhostComponent.ESCAPE;
             if (inPosition(ghostActor, 0.1f)) {
-                ghostActor.currentState = MyGhostComponent.ESCAPE;
+                status = MyGhostComponent.ESCAPE;
             }
         }
     }
     public void ESCAPE() {
         // get away from the player
-        ghostActor.currentState = MyGhostComponent.ESCAPE;
+//        ghostActor.currentState = MyGhostComponent.ESCAPE;
 
         // update path every 0.2f
+        System.out.println("逃跑");
         if (ghostActor.nextNode == null || ghostActor.timer > 0.2f) {
             MyAStarMap map = MyGameManager.getinstance().pathfinder.myAStarMap;
 
@@ -328,7 +311,7 @@ public class GhostActorAi {
             tmpV1.set(x, y);
             ghostActor.nextNode = MyGameManager.getinstance().pathfinder.findNextNode(ghostActor.getPosition(), tmpV1);
             ghostActor.timer = 0;
-            System.out.println(ghostActor.nextNode+"----------------------");
+//            System.out.println(ghostActor.nextNode+"----------------------");
         }
 
         if (ghostActor.nextNode == null || !nearPlayer(ghostActor, PURSUE_RADIUS + 1)) {
@@ -351,22 +334,22 @@ public class GhostActorAi {
         }
 
         if (!ghostActor.warken && inPosition(ghostActor, 0.1f)) {
-            ghostActor.currentState = MyGhostComponent.PURSUE;
+            status = MyGhostComponent.PURSUE;
             return;
         }
 
         if (ghostActor.hp <= 0 && inPosition(ghostActor, 0.1f)) {
-            ghostActor.currentState = MyGhostComponent.DIE;
+            status = MyGhostComponent.DIE;
         }
     }
     public void DIE() {
-        ghostActor.currentState = MyGhostComponent.DIE;
+//        ghostActor.currentState = MyGhostComponent.DIE;
         // respawn when getting back to the respawning postion
         // update path every 0.2f
         if (ghostActor.nextNode == null || ghostActor.timer > 0.2f) {
             ghostActor.nextNode = MyGameManager.getinstance().pathfinder.findNextNode(ghostActor.getPosition(), MyGameManager.getinstance().ghostSpawnPos);
             ghostActor.timer = 0;
-            System.out.println(ghostActor.nextNode+"----------------------");
+//            System.out.println(ghostActor.nextNode+"----------------------");
         }
 
         if (ghostActor.nextNode == null || ghostActor.getPosition().dst2(MyGameManager.getinstance().ghostSpawnPos) < 0.04f) {
@@ -391,7 +374,7 @@ public class GhostActorAi {
     }
     public void RESPAWN() {
         ghostActor.respawn();
-        ghostActor.currentState = MyGhostComponent.MOVE_UP;
+        status = MyGhostComponent.MOVE_UP;
     };
 
     protected boolean nearPlayer(GhostActor ghostActor, float distance) {
@@ -454,19 +437,17 @@ public class GhostActorAi {
                 break;
         }
         world.rayCast(rayCastCallback, tmpV1, tmpV2);
-
+//        System.out.println(hitWall);
         return hitWall;
     }
 
     protected Integer[] getDirectionChoices(GhostActor ghostActor, int state) {
         Body body = ghostActor.getBody();
         World world = body.getWorld();
-
         choicesList.clear();
         for (int i = 0; i < 4; i++) {
             choicesList.add(i);
         }
-
         choicesList.remove(state);
 
         tmpV1.set(body.getWorldCenter());

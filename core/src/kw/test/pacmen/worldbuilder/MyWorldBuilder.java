@@ -169,7 +169,7 @@ public class MyWorldBuilder {
             MyGameManager.getinstance().ghostSpawnPos.set(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
 
             // create four ghosts
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 1; i++) {
                 createGhost(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2, i);
             }
         }
@@ -382,17 +382,17 @@ public class MyWorldBuilder {
             animationActor.setAniType(MyPlayerComponent.CURRENT_DIR);
         }
         if (MyPlayerComponent.CURRENT_DIR == MyPlayerComponent.MOVE_LEFT){
-            System.out.println("left");
+//            System.out.println("left");
             playerBody.applyLinearImpulse(tmpV1.set(-3.6f, 0).scl(playerBody.getMass()), playerBody.getWorldCenter(), true);
         }else if (MyPlayerComponent.CURRENT_DIR == MyPlayerComponent.MOVE_RIGHT){
-            System.out.println("right");
+//            System.out.println("right");
             playerBody.applyLinearImpulse(tmpV1.set(3.6f, 0).scl(playerBody.getMass()), playerBody.getWorldCenter(), true);
         }else if (MyPlayerComponent.CURRENT_DIR == MyPlayerComponent.MOVE_UP){
             playerBody.applyLinearImpulse(tmpV1.set(0, 3.6f).scl(playerBody.getMass()), playerBody.getWorldCenter(), true);
-            System.out.println("down");
+//            System.out.println("down");
         }else if (MyPlayerComponent.CURRENT_DIR == MyPlayerComponent.MOVE_DOWN){
             playerBody.applyLinearImpulse(tmpV1.set(0, -3.6f).scl(playerBody.getMass()), playerBody.getWorldCenter(), true);
-            System.out.println("up");
+//            System.out.println("up");
         }
         if (playerBody.getLinearVelocity().len2() > 3.6F * 3.6F) {
             playerBody.setLinearVelocity(playerBody.getLinearVelocity().scl(3.6F / playerBody.getLinearVelocity().len()));
