@@ -16,14 +16,8 @@ import kw.test.pacmen.components.MyGhostComponent;
 import kw.test.pacmen.components.MyPillComponent;
 import kw.test.pacmen.components.MyPlayerComponent;
 import kw.test.pacmen.manger.MyGameManager;
-//import kw.test.pacmen.system.MyGhostSystem;
 
 public class MyWorldContactListener implements ContactListener {
-
-    public MyWorldContactListener(){
-
-    }
-
     @Override
     public void beginContact(Contact contact) {
         Fixture fixtureA = contact.getFixtureA();

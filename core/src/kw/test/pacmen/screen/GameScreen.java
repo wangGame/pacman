@@ -82,19 +82,15 @@ public class GameScreen extends ScreenAdapter {
         super.render(delta);
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         myWorldBuilder.update();
-
-            world.step(1/60F,8,3);
+        world.step(1/60F,8,3);
         debugRenderer .render(world, pacmanGame.getWorldView().getCamera().combined);
         tiledMapRenderer.setView((OrthographicCamera) pacmanGame.getWorldView().getCamera());
         tiledMapRenderer.render();
         initKeyInput();
-
         stage.act();
         stage.draw();
 //        ambientLight -= delta;
-
         rayHandler.setCombinedMatrix(((OrthographicCamera) pacmanGame.getWorldView().getCamera()));
         rayHandler.updateAndRender();
     }

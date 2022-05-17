@@ -39,6 +39,15 @@ public class GhostActor extends AnimationActor{
             }
         }
         ai.update();
+
+
+        if (getBody().getPosition().x <= 0) {
+            getBody().setTransform(19.0f, getBody().getPosition().y, 0);
+        }
+
+        else if (getBody().getPosition().x >= 19f) {
+            getBody().setTransform(0, getBody().getPosition().y, 0);
+        }
     }
 
     public void respawn() {
