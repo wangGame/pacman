@@ -14,6 +14,7 @@ public class PlayerActor extends AnimationActor {
     public int current_dir;
     private final Vector2 tmpV1 = new Vector2();
     private int player = 0;
+    private int last_dir;
 
     public PlayerActor(){
         wudi = true;
@@ -45,8 +46,9 @@ public class PlayerActor extends AnimationActor {
 
     public void move() {
 //        AnimationActor animationActor = (AnimationActor) playerBody.getUserData();
-        if (current_dir != MyPlayerComponent.IDLE) {
-            setAniType(MyPlayerComponent.CURRENT_DIR);
+        System.out.println(current_dir+"-----"+last_dir);
+        if (current_dir != last_dir&&current_dir!=MyPlayerComponent.IDLE) {
+            setAniType(current_dir);
         }
         if (current_dir == MyPlayerComponent.MOVE_LEFT) {
 //            System.out.println("left");
@@ -64,6 +66,7 @@ public class PlayerActor extends AnimationActor {
         if (getBody().getLinearVelocity().len2() > 3.6F * 3.6F) {
             getBody().setLinearVelocity(getBody().getLinearVelocity().scl(3.6F / getBody().getLinearVelocity().len()));
         }
+        last_dir = current_dir;
     }
 
 

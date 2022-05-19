@@ -182,7 +182,7 @@ public class MyWorldBuilder {
             Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
             correctRectangle(rectangle);
             MyGameManager.getinstance().playerSpawnPos.set(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
-            for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < 1; i++) {
                 createPlayer(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2,i);
             }
         }
