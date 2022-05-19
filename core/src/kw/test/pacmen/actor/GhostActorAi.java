@@ -115,7 +115,6 @@ public class GhostActorAi {
 //        test();
 
         if (ghostActor.warken) {
-            status = MyGhostComponent.ESCAPE;
             if (ghostActor.hp <= 0 && inPosition(ghostActor, 0.1f)) {
                 ghostActor.currentState = MyGhostComponent.DIE;
                 status = MyGhostComponent.DIE;
@@ -217,7 +216,7 @@ public class GhostActorAi {
 
     private void test() {
         if (ghostActor.warken) {
-            status = MyGhostComponent.ESCAPE;
+//            status = MyGhostComponent.ESCAPE;
 //            if (ghostActor.hp <= 0 && inPosition(ghostActor, 0.1f)) {
 //                status = MyGhostComponent.DIE;
 //                return;
@@ -314,8 +313,10 @@ public class GhostActorAi {
 //            System.out.println(ghostActor.nextNode+"----------------------");
         }
 
-        if (ghostActor.nextNode == null || !nearPlayer(ghostActor, PURSUE_RADIUS + 1)) {
+        if (ghostActor.nextNode == null || !nearPlayer(ghostActor, PURSUE_RADIUS+3)) {
             // no path found or away from the player
+            System.out.println("random ---------------------------"+ghostActor.nextNode);
+            System.out.println("random ---------------------------");
             changeState(ghostActor, MathUtils.random(0, 3));
             return;
         }

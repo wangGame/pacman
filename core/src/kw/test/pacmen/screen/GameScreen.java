@@ -87,10 +87,8 @@ public class GameScreen extends ScreenAdapter {
         debugRenderer .render(world, pacmanGame.getWorldView().getCamera().combined);
         tiledMapRenderer.setView((OrthographicCamera) pacmanGame.getWorldView().getCamera());
         tiledMapRenderer.render();
-        initKeyInput();
         stage.act();
         stage.draw();
-//        ambientLight -= delta;
         rayHandler.setCombinedMatrix(((OrthographicCamera) pacmanGame.getWorldView().getCamera()));
         rayHandler.updateAndRender();
     }
@@ -98,23 +96,5 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void resize(int width, int height) {
         super.resize(width, height);
-    }
-
-
-    public void initKeyInput(){
-        MyPlayerComponent.CURRENT_DIR = MyPlayerComponent.IDLE;
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            MyPlayerComponent.CURRENT_DIR = MyPlayerComponent.MOVE_LEFT;
-//            System.out.println("left");
-        }else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            MyPlayerComponent.CURRENT_DIR = MyPlayerComponent.MOVE_RIGHT;
-//            System.out.println("right");
-        }else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            MyPlayerComponent.CURRENT_DIR = MyPlayerComponent.MOVE_DOWN;
-//            System.out.println("down");
-        }else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            MyPlayerComponent.CURRENT_DIR = MyPlayerComponent.MOVE_UP;
-//            System.out.println("up");
-        }
     }
 }

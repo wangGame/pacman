@@ -7,7 +7,6 @@ import kw.test.pacmen.components.MyGhostComponent;
 import kw.test.pacmen.manger.MyGameManager;
 
 public class GhostActor extends AnimationActor{
-
     public int currentState = MyGhostComponent.MOVE_UP;
     public boolean warken;
     public int hp = 100;

@@ -182,7 +182,9 @@ public class MyWorldBuilder {
             Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
             correctRectangle(rectangle);
             MyGameManager.getinstance().playerSpawnPos.set(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
-            createPlayer(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
+            for (int i = 0; i < 2; i++) {
+                createPlayer(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2,i);
+            }
         }
     }
 
@@ -192,8 +194,9 @@ public class MyWorldBuilder {
         return playerBody;
     }
 
-    private void createPlayer(float x, float y) {
+    private void createPlayer(float x, float y, int index) {
         PlayerActor animationActor = new PlayerActor();
+        animationActor.setPlayer(index);
         gameView.addActor(animationActor);
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
