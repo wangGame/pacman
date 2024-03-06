@@ -190,10 +190,6 @@ public class MyWorldBuilder {
 
     private Body playerBody;
 
-    public Body getPlayerBody() {
-        return playerBody;
-    }
-
     private void createPlayer(float x, float y, int index) {
         PlayerActor animationActor = new PlayerActor();
         animationActor.setPlayer(index);
@@ -277,7 +273,7 @@ public class MyWorldBuilder {
         animationActor.setAniType(MyPlayerComponent.MOVE_LEFT);
 
 
-        PointLight pointLight = new PointLight(rayHandler, 50, new Color(0.5f, 0.5f, 0.5f, 1.0f), 12f, 0, 0);
+        PointLight pointLight = new PointLight(rayHandler, 50, new Color(0.5f, 0.5f, 0.5f, 1.0f), 4f, 0, 0);
         pointLight.setContactFilter(MyGameManager.LIGHT_BIT, MyGameManager.NOTHING_BIT, MyGameManager.WALL_BIT);
         pointLight.setSoft(true);
         pointLight.setSoftnessLength(2.0f);
@@ -379,7 +375,7 @@ public class MyWorldBuilder {
         body.setUserData(animationActor);
         animationActor.initAnimation(MyGhostComponent.MOVE_UP);
 
-        PointLight pointLight = new PointLight(rayHandler, 50, new Color(0.5f, 0.5f, 0.5f, 1.0f), 12f, 0, 0);
+        PointLight pointLight = new PointLight(rayHandler, 50, new Color(0.5f, 0.5f, 0.5f, 1.0f), 4f, 0, 0);
         pointLight.setContactFilter(MyGameManager.LIGHT_BIT, MyGameManager.NOTHING_BIT, MyGameManager.WALL_BIT);
         pointLight.setSoft(true);
         pointLight.setSoftnessLength(2.0f);

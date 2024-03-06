@@ -47,34 +47,32 @@ public class GameScreen extends ScreenAdapter {
     private Group gameView;
     private MyWorldBuilder myWorldBuilder;
     private RayHandler rayHandler;
-    private float ambientLight = 0.5f;
 
     public GameScreen(PacmanGame pacmanGame) {
         this.pacmanGame = pacmanGame;
         this.stage = new Stage(pacmanGame.getGameView(),pacmanGame.batch);
     }
 
-
     @Override
     public void show() {
         world = new World(Vector2.Zero,true);
         world.setContactListener(new MyWorldContactListener());
+
         debugRenderer = new Box2DDebugRenderer();
         tiledMap = new TmxMapLoader().load("map/map.tmx");
+
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap,1/16.0F,pacmanGame.getBatch());
         gameView = new Group();
         gameView.setSize(Constant.GAMEWIDTH,Constant.GAMEHEIGHT);
-        stage.addActor(gameView);
         gameView.setPosition(Constant.GAMEWIDTH/2,Constant.GAMEHEIGHT/2, Align.center);
         gameView.setDebug(true);
+        stage.addActor(gameView);
+
 
         rayHandler = new RayHandler(world);
-        rayHandler.setAmbientLight(0.5F);
+        rayHandler.setAmbientLight(0.3F);
         myWorldBuilder = new MyWorldBuilder(tiledMap, world, rayHandler, gameView);
         myWorldBuilder.buildMap();
-
-//        rayHandler.setAmbientLight(MathUtils.clamp(0.6F, 0f, 1f));
-//        rayHandler.removeAll();
     }
 
     @Override
@@ -84,6 +82,7 @@ public class GameScreen extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         myWorldBuilder.update();
         world.step(1/60F,8,3);
+
         debugRenderer .render(world, pacmanGame.getWorldView().getCamera().combined);
         tiledMapRenderer.setView((OrthographicCamera) pacmanGame.getWorldView().getCamera());
         tiledMapRenderer.render();
@@ -91,10 +90,5 @@ public class GameScreen extends ScreenAdapter {
         stage.draw();
         rayHandler.setCombinedMatrix(((OrthographicCamera) pacmanGame.getWorldView().getCamera()));
         rayHandler.updateAndRender();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        super.resize(width, height);
     }
 }

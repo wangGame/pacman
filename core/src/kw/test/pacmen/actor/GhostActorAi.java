@@ -52,31 +52,6 @@ public class GhostActorAi {
 
     private void updateState() {
         ghostActor.currentState = status;
-//        switch (this.status) {
-//            case MyGhostComponent.MOVE_UP: // UP
-////                ghostActor.changeState(MOVE_UP);
-//                ghostActor.currentState = MyGhostComponent.MOVE_UP;
-//                break;
-//            case MyGhostComponent.MOVE_DOWN: // DOWN
-//                ghostActor.currentState = MyGhostComponent.MOVE_DOWN;
-//                break;
-//            case MyGhostComponent.MOVE_LEFT: // LEFT
-//                ghostActor.currentState = MyGhostComponent.MOVE_LEFT;
-//                break;
-//            case MyGhostComponent.MOVE_RIGHT: // RIGHT
-//                ghostActor.currentState = MyGhostComponent.MOVE_RIGHT;
-//                break;
-//            case MyGhostComponent.ESCAPE: // ESCAPE
-//                ghostActor.currentState = MyGhostComponent.ESCAPE;
-//                break;
-//            case MyGhostComponent.PURSUE:
-//                ghostActor.currentState = MyGhostComponent.PURSUE;
-//            case MyGhostComponent.DIE: // DIE
-//                ghostActor.currentState = MyGhostComponent.DIE;
-//                break;
-//            default:
-//                break;
-//        }
     }
 
     private void statusChange() {
@@ -513,15 +488,5 @@ public class GhostActorAi {
             ghostActor.getBody().setTransform(tmpV1.set(MathUtils.floor(ghostActor.getPosition().x) + 0.5f,
                     MathUtils.floor(ghostActor.getPosition().y) + 0.5f), 0);
         }
-//        ghostActor.timer = 0;
     }
-
-//    public void exit(GhostAgent ghostActor) {
-//        ghostActor.nextNode = null;
-//    }
-
-//    @Override
-//    public boolean onMessage(GhostAgent ghostActor, Telegram telegram) {
-//        return false;
-//    }
 }

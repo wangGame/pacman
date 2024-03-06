@@ -14,7 +14,7 @@ public class AnimationActor extends Actor {
     //动画
     private Animation animation;
     //所有的动画，名称和动画匹配
-    private HashMap<Integer,Animation> animationHashMap = new HashMap<>();
+    private HashMap<Integer,Animation> animationHashMap;
     //动画进行的时间
     private float animationTime;
     //当前需要绘制的动画
@@ -23,6 +23,9 @@ public class AnimationActor extends Actor {
     private Body body;
     //是不是死亡
     private boolean die;
+    public AnimationActor(){
+        this.animationHashMap = new HashMap<>();
+    }
 
     public void setDie(boolean die) {
         this.die = die;
